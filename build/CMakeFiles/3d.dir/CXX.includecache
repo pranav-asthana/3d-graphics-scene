@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pranavasty/Projects/Computer Graphics/Assignment2/3d.cpp
+GL/glew.h
+-
+GL/glu.h
+-
+GLFW/glfw3.h
+-
+glm/glm.hpp
+-
+glm/gtc/matrix_transform.hpp
+-
+glm/gtc/type_ptr.hpp
+-
+vector
+-
+iostream
+-
+stdlib.h
+-
+math.h
+-
+tuple
+-
+unistd.h
+-
+

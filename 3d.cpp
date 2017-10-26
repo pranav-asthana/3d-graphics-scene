@@ -15,16 +15,51 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
+float xpan = 0.0f;
+float ypan = 0.0f;
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    // float cameraSpeed = 0.05f; // adjust accordingly
+    // if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    //     cameraPos += cameraSpeed * cameraFront;
+    // if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    //     cameraPos -= cameraSpeed * cameraFront;
+    // if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    //     cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    // if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    //     cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+    if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        xpan += 0.01;
+        // if (xpan > 1.0)
+        //     xpan = 1.0;
+    }
+    if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    {
+        xpan -= 0.01;
+        // if (xpan < -1.0)
+        //     xpan = -1.0;
+    }
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        ypan += 0.01;
+
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        ypan -= 0.01;
+}
+
 void drawCube(GLfloat vertices[])
 {
-    glEnable(GL_DEPTH_TEST);
-    // Accept fragment if it closer to the camera than the former one
-    glDepthFunc(GL_LESS);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    GLfloat red = 1;
-    GLfloat green = 1;
-    GLfloat blue = 1;
+    GLfloat red = 0;
+    GLfloat green = 0;
+    GLfloat blue = 0;
     GLfloat color_vector[] = {red, green, blue, 1};
 
     glColorPointer(4, GL_FLOAT, 0, color_vector);
@@ -51,6 +86,20 @@ void updateVertices(GLfloat vertices[], glm::mat4 M, int size)
         vertices[i+2] = newVec[2];
         printf("%f %f %f\n", vertices[i], vertices[i+1], vertices[i+2]);
     }
+    printf("-----------\n");
+}
+
+void printmatrix(glm::mat4 M)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            printf("%f ", M[j][i]);
+        }
+        printf("\n");
+    }
+    printf("-------------------------\n");
 }
 
 int main()
@@ -60,6 +109,10 @@ int main()
     if (!glfwInit()) {
         return -1;
     }
+
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "IS F311 Computer Graphics Assignment", NULL, NULL);
@@ -73,10 +126,14 @@ int main()
     glfwMakeContextCurrent(window);
 
     glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    // glMatrixMode(GL_PROJECTION);
+    // glLoadIdentity();
+    // glMatrixMode(GL_MODELVIEW);
+    // glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+    // Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
 
     GLfloat vertices_triangles[] = {
             -0.5f, -0.5f, -0.5f,
@@ -181,10 +238,10 @@ int main()
 
     glm::vec3 cubePositions[] = {
             glm::vec3( 0.0f,  0.0f,  0.0f),
-            glm::vec3( 2.0f,  5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3( 2.4f, -0.4f, -3.5f),
+            glm::vec3( 0.5f,  0.0f,  -0.5f),
+            glm::vec3( 0.5f,  0.0f,  0.5f),
+            glm::vec3(-0.5f,  0.0f, -0.3f),
+            glm::vec3(-0.5f,  0.0f,  0.5f),
             glm::vec3(-1.7f,  3.0f, -7.5f),
             glm::vec3( 1.3f, -2.0f, -2.5f),
             glm::vec3( 1.5f,  2.0f, -2.5f),
@@ -192,65 +249,80 @@ int main()
             glm::vec3(-1.3f,  1.0f, -1.5f)
         };
 
-    int i = 0;
+    int rotation = 0;
     while (!glfwWindowShouldClose(window)) {
 
-        GLfloat vertices[] = {
-         0.5f, -0.5f, -0.5f,
-         0.5f,  0.5f, -0.5f,
-         -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
+        processInput(window);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
+        for (unsigned int i = 0; i < 10; i++)
+        {
+            GLfloat vertices[] = {
+                0.5f, -0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
 
-         0.5f,  0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-         0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
 
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
+                0.5f,  0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                0.5f,  0.5f,  0.5f,
 
-         0.5f,  0.5f, -0.5f,
-         0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f
-    };
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f,  0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-        glm::mat4 view;
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
-        view       = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.0f));
+                0.5f,  0.5f, -0.5f,
+                0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f,  0.5f,
+                -0.5f,  0.5f, -0.5f
+            };
 
-        // updateVertices(vertices, projection, 4*6*3);
-        // updateVertices(vertices, view, 4*6*3);
-        //
-        // for (unsigned int i = 0; i < 10; i++)
-        // {
-        //     // calculate the model matrix for each object and pass it to shader before drawing
-        //     glm::mat4 model;
-        //     model = glm::translate(model, cubePositions[i]);
-        //     float angle = 20.0f * i;
-        //     model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        //     updateVertices(vertices, model, 4*6*3);
-        //     drawCube(vertices);
-        // }
+            glm::mat4 view;
+            glm::mat4 projection;
+            projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
+            // view       = glm::translate(view, glm::vec3(xpan, ypan, -3.0f));
 
-        glm::mat4 t;
-        i += 1;
-        t = glm::rotate(t, (float)((3.1415+i)/180), glm::vec3(1.f, 0.5f, 0.0f));
-        updateVertices(vertices, t, 4*6*3);
-        drawCube(vertices);
+            float radius = 0.1f;
+            float camX = sin(xpan) * radius;
+            float camZ = cos(xpan) * radius;
+            view = glm::lookAt(glm::vec3(camX, ypan, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+            // printmatrix(projection);
+
+
+            // view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+
+            // calculate the model matrix for each object and pass it to shader before drawing
+            glm::mat4 model;
+            model = glm::translate(model, cubePositions[i]);
+            // float angle = 20.0f * i;
+            // model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            // rotation++;
+            // model = glm::rotate(model, (float)((3.14+rotation/4)/180), glm::vec3(1.f, 0.f, 0.0f));
+
+            glm::mat4 mvp = projection*view*model;
+            mvp = glm::scale(mvp, glm::vec3(0.1, 0.1, 0.1));
+            updateVertices(vertices, mvp, 4*6*3);
+
+            drawCube(vertices);
+        }
+
+
+        // drawCube(vertices);
         usleep(1e4);
         // sleep(1);
 

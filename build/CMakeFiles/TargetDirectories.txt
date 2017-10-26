@@ -1,3 +1,0 @@
-/home/pranavasty/Projects/Computer Graphics/Assignment2/build/CMakeFiles/edit_cache.dir
-/home/pranavasty/Projects/Computer Graphics/Assignment2/build/CMakeFiles/rebuild_cache.dir
-/home/pranavasty/Projects/Computer Graphics/Assignment2/build/CMakeFiles/3d.dir

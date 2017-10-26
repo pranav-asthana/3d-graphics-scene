@@ -15,9 +15,6 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
-float xpan = 0.0f;
-float ypan = 0.0f;
-
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
@@ -92,24 +89,6 @@ void processInput(GLFWwindow *window)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-    // if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    // {
-    //     xpan += 0.01;
-    //     // if (xpan > 1.0)
-    //     //     xpan = 1.0;
-    // }
-    // if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    // {
-    //     xpan -= 0.01;
-    //     // if (xpan < -1.0)
-    //     //     xpan = -1.0;
-    // }
-    // if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    //     ypan += 0.01;
-    //
-    // if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-    //     ypan -= 0.01;
 }
 
 void drawCube(GLfloat vertices[])
@@ -166,11 +145,6 @@ int main()
     if (!glfwInit()) {
         return -1;
     }
-
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     // Create a windowed mode window and its OpenGL context
     window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "IS F311 Computer Graphics Assignment", NULL, NULL);
 
@@ -191,8 +165,6 @@ int main()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective((float)fov, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
-    // glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
 
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
@@ -311,7 +283,6 @@ int main()
         glm::vec3(-2.0f,  0.0f, -20.0f),
     };
 
-    int rotation = 0;
     while (!glfwWindowShouldClose(window)) {
 
         float currentFrame = glfwGetTime();
@@ -358,18 +329,8 @@ int main()
 
             glm::mat4 view;
             glm::mat4 projection;
-            // projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 1000.0f);
-            // view       = glm::translate(view, glm::vec3(xpan, ypan, -3.0f));
-
-            float radius = 0.1f;
-            float camX = sin(xpan) * radius;
-            float camZ = cos(xpan) * radius;
-            // view = glm::lookAt(glm::vec3(camX, ypan, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-            // printmatrix(projection);
-
 
             view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
 
             // calculate the model matrix for each object and pass it to shader before drawing
             glm::mat4 model;

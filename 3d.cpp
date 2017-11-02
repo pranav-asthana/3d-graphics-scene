@@ -11,6 +11,9 @@
 #include <tuple>
 #include <unistd.h>
 #include <math.h>
+#include "sphere.h"
+#include "cube.h"
+#include "cylinder.h"
 
 #define PI 3.14159265
 #define SCREEN_WIDTH 1280
@@ -131,55 +134,19 @@ void updateVertices(GLfloat vertices[], glm::mat4 M, int size)
 
 void drawCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec, glm::mat4 transformation = glm::mat4(1.0f)) // pass vertices as quads
 {
-
-    GLfloat vertices[6*4*3];
-    glm::vec3 vertices2[] = {
-        center,
-        center + glm::vec3(dimensions.x, 0, 0),
-        center + glm::vec3(dimensions.x, dimensions.y, 0),
-        center + glm::vec3(0, dimensions.y, 0),
-
-        center,
-        center + glm::vec3(0, 0, dimensions.z),
-        center + glm::vec3(0, dimensions.y, dimensions.z),
-        center + glm::vec3(0, dimensions.y, 0),
-
-        center + glm::vec3(dimensions.x, 0, 0),
-        center + glm::vec3(dimensions.x, 0, dimensions.z),
-        center + glm::vec3(dimensions.x, dimensions.y, dimensions.z),
-        center + glm::vec3(dimensions.x, dimensions.y, 0),
-
-        center,
-        center + glm::vec3(dimensions.x, 0, 0),
-        center + glm::vec3(dimensions.x, 0, dimensions.z),
-        center + glm::vec3(0, 0, dimensions.z),
-
-        center + glm::vec3(0, dimensions.y, 0),
-        center + glm::vec3(dimensions.x, dimensions.y, 0),
-        center + glm::vec3(dimensions.x, dimensions.y, dimensions.z),
-        center + glm::vec3(0, dimensions.y, dimensions.z),
-
-        center + glm::vec3(0, 0, dimensions.z),
-        center + glm::vec3(dimensions.x, 0, dimensions.z),
-        center + glm::vec3(dimensions.x, dimensions.y, dimensions.z),
-        center + glm::vec3(0, dimensions.y, dimensions.z)
-    };
-
-    for (int i = 0; i<6*4*3; i+=3)
-    {
-        int j = (int) i/3;
-        vertices[i+0] = vertices2[j].x;
-        vertices[i+1] = vertices2[j].y;
-        vertices[i+2] = vertices2[j].z;
-    }
+    Cube * cube = new Cube(dimensions.x, dimensions.y, dimensions.z);
+    vector<GLfloat> v = cube -> getMesh() -> getVertices();
+    int len = v.size();
+    GLfloat * vertices = &v[0];
 
     glm::mat4 T;
+    T = glm::translate(T, center);
     T = glm::translate(T, glm::vec3(-dimensions.x/2, -dimensions.y/2, -dimensions.z/2));
-    updateVertices(vertices, transformation*T, 6*4*3);
+    updateVertices(vertices, transformation*T, len);
 
     GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
-    GLfloat color_vector[32*3];
-    for (int i = 0; i < 32*3;)
+    GLfloat color_vector[len];
+    for (int i = 0; i < len;)
     {
         for (int j = 0; j < 3; j++)
         {
@@ -191,104 +158,71 @@ void drawCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec, glm::
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glDrawArrays(GL_QUADS, 0, 4*6);
+    glDrawArrays(GL_TRIANGLES, 0, len/3);
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void drawCylinder()
-{}
-
-void drawSphere(glm::mat4 transformation)
+void drawCylinder(glm::vec3 center, float height, float radius, glm::vec3 color_vec, glm::vec3 orientation, glm::mat4 transformation = glm::mat4(1.0f))
 {
-    GLfloat t = (1.0 + sqrt(5.0)) / 2.0;
-    GLfloat vdata[12][3] = {
-        {-1, t, 0}, {1, t, 0}, {-1, -t, 0}, {1, -t, 0},
-        {0, -1, t}, {0, 1, t}, {0, -1, -t}, {0, 1, -t},
-        {t, 0, -1}, {t, 0, 1}, {-t, 0, -1}, {-t, 0, 1}
-    };
+    Cylinder * cylinder = new Cylinder(height, radius);
+    vector<GLfloat> v = cylinder -> getMesh() -> getVertices();
+    int len = v.size();
+    GLfloat * vertices = &v[0];
 
-    int num_triangles = 20;
+    glm::mat4 T;
+    T = glm::translate(T, center);
+    updateVertices(vertices, transformation*T, len);
 
-    GLuint tindices[num_triangles][3] = {
-        {0, 11, 5}, {0, 5, 1}, {0, 1, 7}, {0, 7, 10}, {0, 10, 11},
-        {1, 5, 9}, {5, 11, 4}, {11, 10, 2}, {10, 7, 6}, {7, 1, 8},
-        {3, 9, 4}, {3, 4, 2}, {3, 2, 6}, {3, 6, 8}, {3, 8, 9},
-        {4, 9, 5}, {2, 4, 11}, {6, 2, 10}, {8, 6, 7}, {9, 8, 1}
-    };
-
-    glm::vec3 faces[num_triangles][3];
-    for (int i = 0; i < num_triangles; i++)
+    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
+    GLfloat color_vector[len];
+    for (int i = 0; i < len;)
     {
-         glm::vec3 a = glm::vec3(vdata[tindices[i][0]][0], vdata[tindices[i][0]][1], vdata[tindices[i][0]][2]);
-         glm::vec3 b = glm::vec3(vdata[tindices[i][1]][0], vdata[tindices[i][1]][1], vdata[tindices[i][1]][2]);
-         glm::vec3 c = glm::vec3(vdata[tindices[i][2]][0], vdata[tindices[i][2]][1], vdata[tindices[i][2]][2]);
-         faces[i][0] = a;
-         faces[i][1] = b;
-         faces[i][2] = c;
-    }
-
-    int max_depth = 1;
-    int new_num_triangles = num_triangles * (int) pow(4, max_depth);
-    glm::vec3 new_faces[new_num_triangles][3];
-    for (int depth = 0; depth < max_depth; depth++)
-    {
-        for (int face = 0; face < new_num_triangles; face+=4)
+        for (int j = 0; j < 3; j++)
         {
-            glm::vec3 v1 = faces[face/4][0];//glm::vec3(vdata[tindices[face][0]][0], vdata[tindices[face][0]][1], vdata[tindices[face][0]][2]);
-            glm::vec3 v2 = faces[face/4][1];//glm::vec3(vdata[tindices[face][1]][0], vdata[tindices[face][1]][1], vdata[tindices[face][1]][2]);
-            glm::vec3 v3 = faces[face/4][2];//glm::vec3(vdata[tindices[face][2]][0], vdata[tindices[face][2]][1], vdata[tindices[face][2]][2]);
-
-            glm::vec3 a = (v2 + v1) * 0.5f;
-            glm::vec3 b = (v3 + v2) * 0.5f;
-            glm::vec3 c = (v1 + v3) * 0.5f;
-
-            glm::vec3 vertex_data[4][3] = {
-                {v1, a, c}, {v2, b, a}, {v3, c, b}, {a, b, c}
-            };
-
-            for(int j = 0; j < 4; j++)
-            {
-                printf("Adding face %d\n", face+j);
-                new_faces[face+j][0] = vertex_data[j][0];
-                new_faces[face+j][1] = vertex_data[j][1];
-                new_faces[face+j][2] = vertex_data[j][2];
-            }
+            color_vector[i++] = color[j];
         }
     }
-    num_triangles = new_num_triangles;
-    GLfloat vertices[num_triangles*3*3];
 
-    for (int i = 0, j = 0; j < num_triangles; j++)
+    glColorPointer(3, GL_FLOAT, 0, color_vector);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_TRIANGLES, 0, len/3);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void drawSphere(glm::vec3 center, float radius, glm::vec3 color_vec, glm::mat4 transformation, int detail_level=2)
+{
+    Sphere * s = new Sphere(radius, detail_level);
+    vector<GLfloat> v = s-> getMesh() -> getVertices();
+    int len = v.size();
+    GLfloat * vertices = &v[0];
+
+    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
+    GLfloat color_vector[len];
+    for (int i = 0; i < len;)
     {
-        printf("getting triangle %d(%d, %d, %d)\n", j, tindices[j][0], tindices[j][1], tindices[j][2]);
-        vertices[i++] = new_faces[j][0].x;
-        vertices[i++] = new_faces[j][0].y;
-        vertices[i++] = new_faces[j][0].z;
-
-        vertices[i++] = new_faces[j][1].x;
-        vertices[i++] = new_faces[j][1].y;
-        vertices[i++] = new_faces[j][1].z;
-
-        vertices[i++] = new_faces[j][2].x;
-        vertices[i++] = new_faces[j][2].y;
-        vertices[i++] = new_faces[j][2].z;
+        for (int j = 0; j < 3; j++)
+        {
+            color_vector[i++] = color[j];
+        }
     }
 
-    updateVertices(vertices, transformation, num_triangles*3*3);
+    glm::mat4 translate;
+    translate = glm::translate(translate, center);
+    updateVertices(vertices, transformation*translate, len);
 
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    GLfloat color_vector[] = {1, 0, 0};
     glColorPointer(3, GL_FLOAT, 0, color_vector);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
-    glDrawArrays(GL_TRIANGLES, 0, num_triangles*3);
+    glDrawArrays(GL_TRIANGLES, 0, len/3);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
-
 }
-
 
 glm::mat4 updateView()
 {
@@ -368,8 +302,8 @@ int main()
         //Front
         drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
 
-        // drawSphere(view);
-
+        drawSphere(glm::vec3(0, 1, 0), 0.1, glm::vec3(0, 0.5, 0.5), view);
+        // drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(0, 0.9, 0.9), glm::vec3(1, 0, 0), view);
         for (unsigned int i = 0; i < 10; i++)
         {
             drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);

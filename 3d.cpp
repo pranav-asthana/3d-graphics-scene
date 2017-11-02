@@ -303,11 +303,11 @@ int main()
         drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
 
         drawSphere(glm::vec3(0, 1, 0), 0.1, glm::vec3(0, 0.5, 0.5), view);
-        // drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(0, 0.9, 0.9), glm::vec3(1, 0, 0), view);
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);
-        }
+        drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(0, 0.9, 0.9), glm::vec3(1, 0, 0), view);
+        // for (unsigned int i = 0; i < 10; i++)
+        // {
+        //     drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);
+        // }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

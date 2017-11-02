@@ -26,6 +26,10 @@ public:
     vector<GLfloat> getVertices();
 
     vector<Triangle> getTriangles();
+
+    void transform(glm::mat4 transformation);
+
+    void joinMesh(Mesh * mesh);
 };
 
 #endif

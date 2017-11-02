@@ -14,6 +14,7 @@
 #include "sphere.h"
 #include "cube.h"
 #include "cylinder.h"
+#include "monkeybars.h"
 
 #define PI 3.14159265
 #define SCREEN_WIDTH 1280
@@ -118,116 +119,98 @@ void processInput(GLFWwindow *window)
         cameraPos.z = BOUND_Z2;
 }
 
-void updateVertices(GLfloat vertices[], glm::mat4 M, int size)
+void renderMesh(Mesh * mesh, glm::vec3 color_vec)
 {
-    for (int i = 0; i < size; i += 3)
+    vector<GLfloat> v = mesh -> getVertices();
+
+    int len = v.size();
+    GLfloat * vertices = &v[0];
+
+
+    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
+    GLfloat color_vector[len];
+    for (int i = 0; i < len;)
     {
-        glm::vec4 myVec(vertices[i], vertices[i+1], vertices[i+2], 1.0f);
-        glm::vec4 newVec = M * myVec;
-        vertices[i] = newVec[0];
-        vertices[i+1] = newVec[1];
-        vertices[i+2] = newVec[2];
-        // printf("%f %f %f\n", vertices[i], vertices[i+1], vertices[i+2]);
+        for (int j = 0; j < 3; j++)
+        {
+            color_vector[i++] = color[j];
+        }
     }
-    // printf("-----------\n");
+
+    glColorPointer(3, GL_FLOAT, 0, color_vector);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawArrays(GL_TRIANGLES, 0, len/3);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void drawCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec, glm::mat4 transformation = glm::mat4(1.0f)) // pass vertices as quads
 {
     Cube * cube = new Cube(dimensions.x, dimensions.y, dimensions.z);
-    vector<GLfloat> v = cube -> getMesh() -> getVertices();
-    int len = v.size();
-    GLfloat * vertices = &v[0];
+    Mesh * mesh = cube -> getMesh();
 
     glm::mat4 T;
     T = glm::translate(T, center);
     T = glm::translate(T, glm::vec3(-dimensions.x/2, -dimensions.y/2, -dimensions.z/2));
-    updateVertices(vertices, transformation*T, len);
+    mesh -> transform(transformation*T);
 
-    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
-    GLfloat color_vector[len];
-    for (int i = 0; i < len;)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            color_vector[i++] = color[j];
-        }
-    }
+    renderMesh(mesh, color_vec);
 
-    glColorPointer(3, GL_FLOAT, 0, color_vector);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glDrawArrays(GL_TRIANGLES, 0, len/3);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    free(cube);
+    free(mesh);
 }
 
 void drawCylinder(glm::vec3 center, float height, float radius, glm::vec3 color_vec, glm::vec3 orientation, glm::mat4 transformation = glm::mat4(1.0f))
 {
-    Cylinder * cylinder = new Cylinder(height, radius);
-    vector<GLfloat> v = cylinder -> getMesh() -> getVertices();
-    int len = v.size();
-    GLfloat * vertices = &v[0];
+    Cylinder * cylinder = new Cylinder(height, radius, orientation);
 
     glm::mat4 T;
     T = glm::translate(T, center);
-    updateVertices(vertices, transformation*T, len);
 
-    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
-    GLfloat color_vector[len];
-    for (int i = 0; i < len;)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            color_vector[i++] = color[j];
-        }
-    }
+    Mesh * mesh = cylinder -> getMesh();
+    mesh -> transform(transformation*T);
 
-    glColorPointer(3, GL_FLOAT, 0, color_vector);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glDrawArrays(GL_TRIANGLES, 0, len/3);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    renderMesh(mesh, color_vec);
+
+    free(cylinder);
+    free(mesh);
 }
 
 void drawSphere(glm::vec3 center, float radius, glm::vec3 color_vec, glm::mat4 transformation, int detail_level=2)
 {
-    Sphere * s = new Sphere(radius, detail_level);
-    vector<GLfloat> v = s-> getMesh() -> getVertices();
-    int len = v.size();
-    GLfloat * vertices = &v[0];
+    Sphere * sphere = new Sphere(radius, detail_level);
+    Mesh * mesh  = sphere -> getMesh();
 
-    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
-    GLfloat color_vector[len];
-    for (int i = 0; i < len;)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            color_vector[i++] = color[j];
-        }
-    }
+    glm::mat4 T;
+    T = glm::translate(T, center);
+    mesh -> transform(transformation*T);
 
-    glm::mat4 translate;
-    translate = glm::translate(translate, center);
-    updateVertices(vertices, transformation*translate, len);
+    renderMesh(mesh, color_vec);
 
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glColorPointer(3, GL_FLOAT, 0, color_vector);
+    free(sphere);
+    free(mesh);
+}
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glDrawArrays(GL_TRIANGLES, 0, len/3);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+void drawMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, int height, glm::mat4 transformation)
+{
+    MonkeyBars * monkeybars = new MonkeyBars(length, height);
+    Mesh * mesh = monkeybars -> getMesh();
+
+    glm::mat4 T;
+    T = glm::translate(T, position);
+    mesh -> transform(transformation*T);
+
+    renderMesh(mesh, color_vec);
+
+    free(monkeybars);
+    free(mesh);
 }
 
 glm::mat4 updateView()
 {
-    glm::mat4 view;
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     return view;
 }
 
@@ -258,8 +241,12 @@ int main()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glEnable(GL_DEPTH_TEST);
     gluPerspective((float)fov, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_DEPTH_TEST);
+
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
@@ -302,8 +289,9 @@ int main()
         //Front
         drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
 
-        drawSphere(glm::vec3(0, 1, 0), 0.1, glm::vec3(0, 0.5, 0.5), view);
-        drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(0, 0.9, 0.9), glm::vec3(1, 0, 0), view);
+        drawMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3, view);
+        // drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(1.0, 0.9, 0), glm::vec3(1, 0, 0), view);
+        // drawSphere(glm::vec3(0, 1, 0), 0.5, glm::vec3(0, 0.5, 0.5), view);
         // for (unsigned int i = 0; i < 10; i++)
         // {
         //     drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);

@@ -3,15 +3,17 @@
 
 #include "mesh.h"
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Cylinder
 {
 public:
-    Cylinder(float height, float radius);
+    Cylinder(float height, float radius, glm::vec3 orientation);
 
     Mesh * getMesh();
 private:
     Mesh * mesh;
-    Mesh * createMesh(float height, float radius);
+    Mesh * createMesh(float height, float radius, glm::vec3 orientation);
 };
 #endif

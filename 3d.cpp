@@ -229,24 +229,21 @@ int main()
         glfwTerminate();
         return false;
     }
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO;
 
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
 
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO;
     int i = 0;
-    if(loadAssImp("simple_round5.obj", indices, vertices, normals)) {
-        GLfloat ModelVertexArray[108000];
-        GLfloat ModelColorArray[108000];
-        unsigned int indexList[108000];
+    if(loadAssImp("5wtf.obj", indices, vertices, normals)) {
+        GLfloat ModelVertexArray[10800];
+        GLfloat ModelColorArray[10800];
+        unsigned int indexList[10800];
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
-            // cout << ModelVertexArray[i] << ' ';
             ModelVertexArray[i++] = it->y;
-            // cout << ModelVertexArray[i] << ' ';
             ModelVertexArray[i++] = it->z;
-            // cout << ModelVertexArray[i] << '\n';
         }
 
         for (int j = 0; j < indices.size(); j++) {
@@ -294,7 +291,7 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        // cout << "FPS: " << 1.0f/deltaTime << endl;
+        cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 10.0f);
@@ -309,8 +306,7 @@ int main()
             drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         }
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-
-        drawGenericObject(ModelArrayID, matrixID, proj, view, indices.size(), true);//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
+        drawGenericObject(ModelArrayID, matrixID, proj, view, indices.size(), true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

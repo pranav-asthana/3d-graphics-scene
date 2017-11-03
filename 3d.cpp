@@ -202,14 +202,14 @@ void setCallBacks(GLFWwindow* window)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
-void generateModelVAO(GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColorVBO, GLuint &EBO, GLuint &indexSize)
+void generateModelVAO(string path, GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColorVBO, GLuint &EBO, GLuint &indexSize)
 {
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
 
     int i = 0;
-    if(loadAssImp("5wtf.obj", indices, vertices, normals)) {
+    if(loadAssImp(path.c_str(), indices, vertices, normals)) {
         GLfloat ModelVertexArray[10800];
         GLfloat ModelColorArray[10800];
         unsigned int indexList[10800];
@@ -222,11 +222,13 @@ void generateModelVAO(GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColor
         for (int j = 0; j < indices.size(); j++) {
             indexList[j] = indices[j];
         }
-        for (int j = 0; j < i; i++) {
-            ModelColorArray[j++] = 1;
+        cout << path << i;
+        for (int j = 0; j < i; j++) {
+            ModelColorArray[j] = 0.5f;
         }
 
         indexSize = indices.size();
+        int size = i*sizeof(GLfloat);
 
         glGenVertexArrays(1, &ModelArrayID);
         glBindVertexArray(ModelArrayID);
@@ -235,13 +237,13 @@ void generateModelVAO(GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColor
 
         glGenBuffers(1, &ModelVBO);
         glBindBuffer(GL_ARRAY_BUFFER, ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        // glGenBuffers(1, &ModelColorVBO);
-        // glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glGenBuffers(1, &ModelColorVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
+        glBufferData(GL_ARRAY_BUFFER, size, ModelColorArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -281,8 +283,12 @@ int main()
         return false;
     }
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
-    generateModelVAO(ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    generateModelVAO("5wtf.obj", ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize);
+
+    GLuint CarouselArrayID, CarouselVBO, CarouselColorVBO, CarouselEBO, CarouselIndexSize;
+    generateModelVAO("simple_round5.obj", CarouselArrayID, CarouselVBO, CarouselColorVBO, CarouselEBO, CarouselIndexSize);
+
+    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -296,7 +302,7 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        cout << "FPS: " << 1.0f/deltaTime << endl;
+        // cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 10.0f);
@@ -311,7 +317,10 @@ int main()
             drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         }
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(ModelArrayID, matrixID, proj, view, indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(CarouselArrayID, matrixID, proj, view, CarouselIndexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+
+        drawGenericObject(ModelArrayID, matrixID, proj, view, indexSize, true, glm::vec3(5,0,3));
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

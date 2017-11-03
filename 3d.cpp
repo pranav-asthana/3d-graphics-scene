@@ -8,6 +8,11 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <cstring>
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+
 
 #include "shader.hpp"
 #include "Camera.h"
@@ -46,6 +51,62 @@ void planeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm:
     glm::mat4 MVP = proj*view*model;
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glDrawArrays(GL_TRIANGLES, 0, 2*3);
+}
+
+void objDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, int index)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    // model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
+    glm::mat4 MVP = proj*view*model;
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    // glDrawArrays(GL_TRIANGLES, 0, 3*size); // 12*3 indices starting at 0 -> 12 triangles
+
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+
+bool loadAssImp(
+	const char * path,
+	std::vector<unsigned short> & indices,
+	std::vector<glm::vec3> & vertices,
+	std::vector<glm::vec3> & normals
+){
+
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(path, 0/*aiProcess_JoinIdenticalVertices | aiProcess_SortByPType*/);
+	if( !scene) {
+		fprintf( stderr, importer.GetErrorString());
+		getchar();
+		return false;
+	}
+	const aiMesh* mesh = scene->mMeshes[0]; // In this simple example code we always use the 1rst mesh (in OBJ files there is often only one anyway)
+
+	// Fill vertices positions
+	vertices.reserve(mesh->mNumVertices);
+	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+		aiVector3D pos = mesh->mVertices[i];
+		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
+	}
+
+	// Fill vertices normals
+	normals.reserve(mesh->mNumVertices);
+	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+		aiVector3D n = mesh->mNormals[i];
+		normals.push_back(glm::vec3(n.x, n.y, n.z));
+	}
+
+
+	// Fill face indices
+	indices.reserve(3*mesh->mNumFaces);
+	for (unsigned int i=0; i<mesh->mNumFaces; i++){
+		// Assume the model has only triangles.
+		indices.push_back(mesh->mFaces[i].mIndices[0]);
+		indices.push_back(mesh->mFaces[i].mIndices[1]);
+		indices.push_back(mesh->mFaces[i].mIndices[2]);
+	}
+
+	// The "scene" pointer will be deleted automatically by "importer"
+	return true;
 }
 
 void setupVAO(GLuint* VertexArrayID, vector<VertexColorPair> &VBOArray)
@@ -142,6 +203,48 @@ int main()
         return false;
     }
 
+    std::vector<unsigned short> indices;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO;
+    int i = 0;
+    if(loadAssImp("cubeX.obj", indices, vertices, normals)) {
+        GLfloat ModelVertexArray[108];
+        unsigned int indexList[36];
+        for (auto it = vertices.begin(); it != vertices.end(); it++) {
+            ModelVertexArray[i++] = it->x;
+            ModelVertexArray[i++] = it->y;
+            ModelVertexArray[i++] = it->z;
+        }
+        for (int j = 0; j < indices.size(); j++) {
+            indexList[j] = indices[j];
+        }
+
+        glGenVertexArrays(1, &ModelArrayID);
+        glBindVertexArray(ModelArrayID);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glGenBuffers(1, &ModelVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, ModelVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glGenBuffers(1, &ModelColorVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glGenBuffers(1, &EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexList),
+                     indexList, GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+        cout << "success";
+    }
+
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -156,7 +259,7 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        cout << "FPS: " << 1.0f/deltaTime << endl;
+        // cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 10.0f);
@@ -169,8 +272,12 @@ int main()
         glBindVertexArray(VertexArrayID[0]);
         int num = 100;
         for (int i = 0; i < num; i++) {
-            cubeDraw(glm::vec3(10.0f/num*i,10.0f/num*i,10.0f/num*i), matrixID, proj, view);
+            // cubeDraw(glm::vec3(10.0f/num*i,10.0f/num*i,10.0f/num*i), matrixID, proj, view);
         }
+        glBindVertexArray(0);
+
+        glBindVertexArray(ModelArrayID);
+        objDraw(glm::vec3(1,1,1), matrixID, proj, view, vertices.size(), indices.size());
         glBindVertexArray(0);
 
         glBindVertexArray(VertexArrayID[1]);

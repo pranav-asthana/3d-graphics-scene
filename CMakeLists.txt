@@ -13,5 +13,5 @@ find_package(GLEW REQUIRED)
 find_package(assimp REQUIRED)
 
 include_directories( ${OPENGL_INCLUDE_DIRS})
-target_link_libraries(3d ${OPENGL_LIBRARIES} glfw GLEW dl)
+target_link_libraries(3d ${OPENGL_LIBRARIES} glfw GLEW assimp dl)
 target_link_libraries(obj_loader ${OPENGL_LIBRARIES} glfw GLEW assimp dl)

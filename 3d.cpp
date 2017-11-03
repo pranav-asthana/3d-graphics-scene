@@ -194,31 +194,45 @@ int main()
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
 
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+    GLuint VertexArrayID[2];
+    glGenVertexArrays(2, VertexArrayID);
 
-    //now we have matrices, we make the buffers
-    GLuint vertexbuffer, floorvertexbuffer;
+    glBindVertexArray(VertexArrayID[0]);
+
+    //cube
+    GLuint vertexbuffer, colorbuffer;
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glGenBuffers(1, &colorbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glBindVertexArray(0);
+
+    glBindVertexArray(VertexArrayID[1]);
+    //plane
+    GLuint floorvertexbuffer, floorcolorbuffer;
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &floorvertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(floor_data), floor_data, GL_STATIC_DRAW);
-
-
-    GLuint colorbuffer, floorcolorbuffer;
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
 
     glGenBuffers(1, &floorcolorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+    glBindVertexArray(0);
+
+
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -237,27 +251,27 @@ int main()
 
     	// Send our transformation to the currently bound shader,
     	// in the "MVP" uniform
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        // glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
         // 2nd attribute buffer : colors
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+        // glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 
         // Draw the cube !
+        glBindVertexArray(VertexArrayID[0]);
         for (int i = 0; i < 10; i++) {
             cubeDraw(glm::vec3(i,i,i), matrixID, proj, view);
         }
+        glBindVertexArray(0);
 
         // glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        // 2nd attribute buffer : colors
-        // glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
-
+        // glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
+        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        //
+        // // 2nd attribute buffer : colors
+        // // glEnableVertexAttribArray(1);
+        // glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+        glBindVertexArray(VertexArrayID[1]);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -265,6 +279,7 @@ int main()
         glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 2*3);
 
+        glBindVertexArray(0);
 
         // Swap buffers
         glfwSwapBuffers(window);
@@ -276,7 +291,7 @@ int main()
     glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &colorbuffer);
 	glDeleteProgram(programID);
-	glDeleteVertexArrays(1, &VertexArrayID);
+	glDeleteVertexArrays(2, VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

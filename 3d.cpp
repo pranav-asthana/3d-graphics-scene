@@ -24,7 +24,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraPos   = glm::vec3(0.0f, 2.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -199,15 +199,24 @@ int main()
     glBindVertexArray(VertexArrayID);
 
     //now we have matrices, we make the buffers
-    GLuint vertexbuffer;
+    GLuint vertexbuffer, floorvertexbuffer;
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    GLuint colorbuffer;
+    glGenBuffers(1, &floorvertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_data), floor_data, GL_STATIC_DRAW);
+
+
+    GLuint colorbuffer, floorcolorbuffer;
     glGenBuffers(1, &colorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &floorcolorbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -239,6 +248,25 @@ int main()
         for (int i = 0; i < 10; i++) {
             cubeDraw(glm::vec3(i,i,i), matrixID, proj, view);
         }
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        // 2nd attribute buffer : colors
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 MVP = proj*view*model;
+        glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+        glDrawArrays(GL_TRIANGLES, 0, 2*3);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

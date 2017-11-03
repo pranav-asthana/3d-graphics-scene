@@ -261,7 +261,6 @@ void generateModelVAO(string path, GLuint &ModelArrayID, GLuint &ModelVBO, GLuin
                      indexList, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
-        cout << "success";
     }
 }
 
@@ -279,8 +278,6 @@ int main()
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
 	if( window == NULL ){
-		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-		getchar();
 		glfwTerminate();
 		return -1;
 	}
@@ -315,7 +312,7 @@ int main()
         // cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
-        glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 10.0f);
+        glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
         glm::mat4 view;
         view = camera.getCameraView();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

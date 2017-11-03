@@ -48,12 +48,12 @@ static const GLfloat floor_data[] = {
 };
 
 static const GLfloat floor_color_data[] = {
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 1.0f, 0.0f
+    0.25f, 0.5f, 0.0f,
+    0.25f, 0.5f, 0.0f,
+    0.25f, 0.5f, 0.0f,
+    0.25f, 0.5f, 0.0f,
+    0.25f, 0.5f, 0.0f,
+    0.25f, 0.5f, 0.0f
 };
 
 static const GLfloat g_color_buffer_data[] = {

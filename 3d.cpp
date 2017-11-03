@@ -1,22 +1,20 @@
- // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
-
-// Include GLEW
 #include <GL/glew.h>
-
-// Include GLFW
 #include <GLFW/glfw3.h>
-
-// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
-#include "shader.hpp"
 #include <iostream>
+#include <vector>
+#include <utility>
+
+#include "shader.hpp"
 
 #define MAX_FOV 90
 using namespace glm;
+using namespace std;
+typedef pair<GLuint, GLuint> VertexColorPair;
 GLFWwindow* window;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -29,7 +27,7 @@ glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;
-float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float yaw   = -90.0f;
 float pitch =  0.0f;
 float lastX =  800.0f / 2.0;
 float lastY =  600.0 / 2.0;
@@ -144,21 +142,91 @@ void cubeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::
     glDrawArrays(GL_TRIANGLES, 0, 12*3); // 12*3 indices starting at 0 -> 12 triangles
 }
 
+void planeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view)
+{
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
+    // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 MVP = proj*view*model;
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, 2*3);
+}
+
+void setupVAO(GLuint* VertexArrayID, vector<VertexColorPair> &VBOArray)
+{
+    glGenVertexArrays(2, VertexArrayID);
+
+    glBindVertexArray(VertexArrayID[0]);
+
+    //cube
+    VertexColorPair cube;
+    // GLuint vertexbuffer, colorbuffer;
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &cube.first);
+    glBindBuffer(GL_ARRAY_BUFFER, cube.first);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glGenBuffers(1, &cube.second);
+    glBindBuffer(GL_ARRAY_BUFFER, cube.second);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    VBOArray.push_back(cube);
+    glBindVertexArray(0);
+
+    glBindVertexArray(VertexArrayID[1]);
+    //plane
+    // GLuint floorvertexbuffer, floorcolorbuffer;
+    VertexColorPair plane;
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &plane.first);
+    glBindBuffer(GL_ARRAY_BUFFER, plane.first);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_data), floor_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+
+    glGenBuffers(1, &plane.second);
+    glBindBuffer(GL_ARRAY_BUFFER, plane.second);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+    glBindVertexArray(0);
+    VBOArray.push_back(plane);
+}
+
+bool initOpenGL()
+{
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    return true;
+}
+
+void setCallBacks(GLFWwindow* window)
+{
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+}
+
 int main()
 {
-    // Initialise GLFW
-	if( !glfwInit() )
-	{
-		fprintf( stderr, "Failed to initialize GLFW\n" );
-		getchar();
-		return -1;
-	}
-
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    if(!glfwInit())
+    {
+        fprintf( stderr, "Failed to initialize GLFW\n" );
+        getchar();
+        return false;
+    }
+    if (!initOpenGL()) {
+        return -1;
+    }
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow( 1024, 768, "Tutorial 04 - Colored Cube", NULL, NULL);
 	if( window == NULL ){
@@ -167,133 +235,57 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
+    setCallBacks(window);
+    glewExperimental = true; // Needed for core profile
+    if (glewInit() != GLEW_OK) {
+        fprintf(stderr, "Failed to initialize GLEW\n");
+        getchar();
+        glfwTerminate();
+        return false;
+    }
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-
-	// Initialize GLEW
-	glewExperimental = true; // Needed for core profile
-	if (glewInit() != GLEW_OK) {
-		fprintf(stderr, "Failed to initialize GLEW\n");
-		getchar();
-		glfwTerminate();
-		return -1;
-	}
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
+
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
 
     GLuint VertexArrayID[2];
-    glGenVertexArrays(2, VertexArrayID);
-
-    glBindVertexArray(VertexArrayID[0]);
-
-    //cube
-    GLuint vertexbuffer, colorbuffer;
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glBindVertexArray(0);
-
-    glBindVertexArray(VertexArrayID[1]);
-    //plane
-    GLuint floorvertexbuffer, floorcolorbuffer;
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glGenBuffers(1, &floorvertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_data), floor_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
-
-    glGenBuffers(1, &floorcolorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
-    glBindVertexArray(0);
-
+    vector<VertexColorPair> VBOArray;
+    setupVAO(VertexArrayID, VBOArray);
 
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
+        cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         processInput(window);
         glm::mat4 proj = glm::perspective(glm::radians(fov), 4.0f/3.0f, 0.2f, 10.0f);
         glm::mat4 view;
-        // view = glm::lookAt(glm::vec3(3.0f, 3.0f, 3.0f), //position
-        //                     glm::vec3(0.0f, 0.0f, 0.0f), //dir
-        //                     glm::vec3(0.0f, 1.0f, 0.0f)); //upvector
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        // std::cout << cameraPos[0] << ' ' << cameraUp[0] << ' ' << cameraFront[0] << std::endl;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     	glUseProgram(programID);
 
-    	// Send our transformation to the currently bound shader,
-    	// in the "MVP" uniform
-        // glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-
-        // 2nd attribute buffer : colors
-        // glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-
-        // Draw the cube !
         glBindVertexArray(VertexArrayID[0]);
-        for (int i = 0; i < 10; i++) {
-            cubeDraw(glm::vec3(i,i,i), matrixID, proj, view);
+        int num = 100;
+        for (int i = 0; i < num; i++) {
+            cubeDraw(glm::vec3(10.0f/num*i,10.0f/num*i,10.0f/num*i), matrixID, proj, view);
         }
         glBindVertexArray(0);
 
-        // glEnableVertexAttribArray(0);
-        // glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        //
-        // // 2nd attribute buffer : colors
-        // // glEnableVertexAttribArray(1);
-        // glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
         glBindVertexArray(VertexArrayID[1]);
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 MVP = proj*view*model;
-        glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
-        glDrawArrays(GL_TRIANGLES, 0, 2*3);
-
+        planeDraw(glm::vec3(0,0,0), matrixID, proj, view);
         glBindVertexArray(0);
-
-        // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
 
     }
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDeleteBuffers(1, &vertexbuffer);
-	glDeleteBuffers(1, &colorbuffer);
+    //write delete code
 	glDeleteProgram(programID);
 	glDeleteVertexArrays(2, VertexArrayID);
 
-	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
     return 0;
 }
@@ -314,17 +306,11 @@ void processInput(GLFWwindow *window)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
     if (firstMouse)

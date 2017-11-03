@@ -10,6 +10,7 @@
 #include "cube.h"
 #include "cylinder.h"
 #include "monkeybars.h"
+#include "seesaw.h"
 
 class Scene
 {
@@ -22,6 +23,7 @@ public:
     void addCylinder(glm::vec3 center, float height, float radius, glm::vec3 color_vec, glm::vec3 orientation);
 
     void addMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, int height);
+    void addSeeSaw(glm::vec3 position, glm::vec3 color_vec);
 private:
     vector<tuple<Mesh, glm::vec3>> meshes;
 };

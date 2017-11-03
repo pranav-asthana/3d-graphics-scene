@@ -205,7 +205,8 @@ int main()
     glm::mat4 view;
     Scene * scene = new Scene();
 
-    scene->addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3);
+    // scene-> addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3);
+    scene -> addSeeSaw(glm::vec3(0, 0, 0), glm::vec3(0.2, 0.2, 0.7));
 
     vector<tuple<Mesh, glm::vec3>> mesh_group = scene -> getMesh();
 

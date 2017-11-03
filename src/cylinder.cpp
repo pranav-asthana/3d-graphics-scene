@@ -17,7 +17,7 @@ Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
 {
     Mesh * mesh = new Mesh();
 
-    int num_segments = 8;
+    int num_segments = 36;
 
     glm::vec3 vertices[num_segments*2];
 

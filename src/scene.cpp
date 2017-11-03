@@ -69,3 +69,18 @@ void Scene::addMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, i
     delete monkeybars;
     delete mesh;
 }
+
+void Scene::addSeeSaw(glm::vec3 position, glm::vec3 color_vec)
+{
+    SeeSaw * seesaw = new SeeSaw();
+    Mesh * mesh = seesaw -> getMesh();
+
+    glm::mat4 T;
+    T = glm::translate(T, position);
+    mesh -> transform(T);
+
+    meshes.push_back(make_tuple(*mesh, color_vec));
+
+    delete seesaw;
+    delete mesh;
+}

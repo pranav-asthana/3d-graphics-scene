@@ -1,6 +1,5 @@
 #include "monkeybars.h"
 #include "cylinder.h"
-#include "cube.h"
 
 MonkeyBars::MonkeyBars(int length, int height)
 {

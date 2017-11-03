@@ -202,6 +202,57 @@ void setCallBacks(GLFWwindow* window)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
+void generateModelVAO(GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColorVBO, GLuint &EBO, GLuint &indexSize)
+{
+    std::vector<unsigned short> indices;
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+
+    int i = 0;
+    if(loadAssImp("5wtf.obj", indices, vertices, normals)) {
+        GLfloat ModelVertexArray[10800];
+        GLfloat ModelColorArray[10800];
+        unsigned int indexList[10800];
+        for (auto it = vertices.begin(); it != vertices.end(); it++) {
+            ModelVertexArray[i++] = it->x;
+            ModelVertexArray[i++] = it->y;
+            ModelVertexArray[i++] = it->z;
+        }
+
+        for (int j = 0; j < indices.size(); j++) {
+            indexList[j] = indices[j];
+        }
+        for (int j = 0; j < i; i++) {
+            ModelColorArray[j++] = 1;
+        }
+
+        indexSize = indices.size();
+
+        glGenVertexArrays(1, &ModelArrayID);
+        glBindVertexArray(ModelArrayID);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glGenBuffers(1, &ModelVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, ModelVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        // glGenBuffers(1, &ModelColorVBO);
+        // glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
+        // glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glGenBuffers(1, &EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexList),
+                     indexList, GL_STATIC_DRAW);
+
+        glBindVertexArray(0);
+        cout << "success";
+    }
+}
+
 int main()
 {
     if(!glfwInit())
@@ -229,54 +280,8 @@ int main()
         glfwTerminate();
         return false;
     }
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO;
-
-    std::vector<unsigned short> indices;
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
-
-    int i = 0;
-    if(loadAssImp("5wtf.obj", indices, vertices, normals)) {
-        GLfloat ModelVertexArray[10800];
-        GLfloat ModelColorArray[10800];
-        unsigned int indexList[10800];
-        for (auto it = vertices.begin(); it != vertices.end(); it++) {
-            ModelVertexArray[i++] = it->x;
-            ModelVertexArray[i++] = it->y;
-            ModelVertexArray[i++] = it->z;
-        }
-
-        for (int j = 0; j < indices.size(); j++) {
-            indexList[j] = indices[j];
-        }
-        for (int j = 0; j < i; i++) {
-            ModelColorArray[j++] = 1;
-        }
-
-        glGenVertexArrays(1, &ModelArrayID);
-        glBindVertexArray(ModelArrayID);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glGenBuffers(1, &ModelVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        // glGenBuffers(1, &ModelColorVBO);
-        // glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
-        // glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        glGenBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexList),
-                     indexList, GL_STATIC_DRAW);
-
-        glBindVertexArray(0);
-        cout << "success";
-    }
-
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
+    generateModelVAO(ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -306,7 +311,7 @@ int main()
             drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         }
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(ModelArrayID, matrixID, proj, view, indices.size(), true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(ModelArrayID, matrixID, proj, view, indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

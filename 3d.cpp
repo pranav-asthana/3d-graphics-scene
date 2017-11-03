@@ -194,9 +194,9 @@ int main()
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
 
-    GLuint VertexArrayID;
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+    // GLuint VertexArrayID;
+    // glGenVertexArrays(1, &VertexArrayID);
+    // glBindVertexArray(VertexArrayID);
 
     //now we have matrices, we make the buffers
     GLuint vertexbuffer, floorvertexbuffer;
@@ -279,7 +279,7 @@ int main()
     glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &colorbuffer);
 	glDeleteProgram(programID);
-	glDeleteVertexArrays(1, &VertexArrayID);
+	// glDeleteVertexArrays(1, &VertexArrayID);
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

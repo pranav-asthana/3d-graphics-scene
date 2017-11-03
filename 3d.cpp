@@ -219,8 +219,6 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -240,9 +238,11 @@ int main()
     	// Send our transformation to the currently bound shader,
     	// in the "MVP" uniform
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         // 2nd attribute buffer : colors
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
 
         // Draw the cube !
         for (int i = 0; i < 10; i++) {
@@ -251,12 +251,12 @@ int main()
 
         // glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
-        // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         // 2nd attribute buffer : colors
         // glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));

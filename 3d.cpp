@@ -77,6 +77,24 @@ static const GLfloat g_vertex_buffer_data[] = {
      1.0f,-1.0f, 1.0f
 };
 
+static const GLfloat floor_data[] = {
+    1.0f, 0.0f, -1.0f,
+    1.0f, 0.0f, 1.0f,
+    -1.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, -1.0f,
+    -1.0f, 0.0f, 1.0f,
+    -1.0f, 0.0f, -1.0f
+};
+
+static const GLfloat floor_color_data[] = {
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 1.0f, 0.0f
+};
+
 static const GLfloat g_color_buffer_data[] = {
     0.583f,  0.771f,  0.014f,
     0.609f,  0.115f,  0.436f,

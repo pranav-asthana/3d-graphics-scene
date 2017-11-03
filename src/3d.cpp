@@ -147,68 +147,6 @@ void renderMesh(Mesh * mesh, glm::vec3 color_vec)
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void drawCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec, glm::mat4 transformation = glm::mat4(1.0f)) // pass vertices as quads
-{
-    Cube * cube = new Cube(dimensions.x, dimensions.y, dimensions.z);
-    Mesh * mesh = cube -> getMesh();
-
-    glm::mat4 T;
-    T = glm::translate(T, center);
-    T = glm::translate(T, glm::vec3(-dimensions.x/2, -dimensions.y/2, -dimensions.z/2));
-    mesh -> transform(transformation*T);
-
-    renderMesh(mesh, color_vec);
-
-    free(cube);
-    free(mesh);
-}
-
-void drawCylinder(glm::vec3 center, float height, float radius, glm::vec3 color_vec, glm::vec3 orientation, glm::mat4 transformation = glm::mat4(1.0f))
-{
-    Cylinder * cylinder = new Cylinder(height, radius, orientation);
-
-    glm::mat4 T;
-    T = glm::translate(T, center);
-
-    Mesh * mesh = cylinder -> getMesh();
-    mesh -> transform(transformation*T);
-
-    renderMesh(mesh, color_vec);
-
-    free(cylinder);
-    free(mesh);
-}
-
-void drawSphere(glm::vec3 center, float radius, glm::vec3 color_vec, glm::mat4 transformation, int detail_level=2)
-{
-    Sphere * sphere = new Sphere(radius, detail_level);
-    Mesh * mesh  = sphere -> getMesh();
-
-    glm::mat4 T;
-    T = glm::translate(T, center);
-    mesh -> transform(transformation*T);
-
-    renderMesh(mesh, color_vec);
-
-    free(sphere);
-    free(mesh);
-}
-
-void drawMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, int height, glm::mat4 transformation)
-{
-    MonkeyBars * monkeybars = new MonkeyBars(length, height);
-    Mesh * mesh = monkeybars -> getMesh();
-
-    glm::mat4 T;
-    T = glm::translate(T, position);
-    mesh -> transform(transformation*T);
-
-    renderMesh(mesh, color_vec);
-
-    free(monkeybars);
-    free(mesh);
-}
-
 glm::mat4 updateView()
 {
     glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -264,10 +202,11 @@ int main()
         glm::vec3(-2.0f,  0.0f, -20.0f),
     };
 
+    glm::mat4 view;
     Scene * scene = new Scene();
-    glm::mat4 view = updateView();
-    // scene -> addCube(glm::vec3(0, 0, 0), glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0));
+
     scene->addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3);
+
     vector<tuple<Mesh, glm::vec3>> mesh_group = scene -> getMesh();
 
     while (!glfwWindowShouldClose(window)) {
@@ -276,8 +215,8 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::mat4 old_view;
         view = updateView();
+
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -285,26 +224,19 @@ int main()
 
         // DRAW WALLS
         // Left
-        drawCube(glm::vec3(BOUND_X1-1, 0, 0), glm::vec3(1, (BOUND_Y2+BOUND_Y1+1)*2, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 0, 1), view);
-        // Right
-        drawCube(glm::vec3(BOUND_X2+1, 0, 0), glm::vec3(1, (BOUND_Y2+BOUND_Y1+1)*2, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 1, 0), view);
-        // Bottom
-        drawCube(glm::vec3(0, BOUND_Y1-1, 0), glm::vec3((BOUND_X2-BOUND_X1+2), 1, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 1, 1), view);
-        // Top
-        drawCube(glm::vec3(0, BOUND_Y2+1, 0), glm::vec3((BOUND_X2-BOUND_X1+2), 1, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(1, 0, 1), view);
-        // Back
-        drawCube(glm::vec3(0, 0, BOUND_Z1-1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0.5, 0.5, 1), view);
-        //Front
-        drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
+        // drawCube(glm::vec3(BOUND_X1-1, 0, 0), glm::vec3(1, (BOUND_Y2+BOUND_Y1+1)*2, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 0, 1), view);
+        // // Right
+        // drawCube(glm::vec3(BOUND_X2+1, 0, 0), glm::vec3(1, (BOUND_Y2+BOUND_Y1+1)*2, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 1, 0), view);
+        // // Bottom
+        // drawCube(glm::vec3(0, BOUND_Y1-1, 0), glm::vec3((BOUND_X2-BOUND_X1+2), 1, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(0, 1, 1), view);
+        // // Top
+        // drawCube(glm::vec3(0, BOUND_Y2+1, 0), glm::vec3((BOUND_X2-BOUND_X1+2), 1, (BOUND_Z2-BOUND_Z1+2)), glm::vec3(1, 0, 1), view);
+        // // Back
+        // drawCube(glm::vec3(0, 0, BOUND_Z1-1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0.5, 0.5, 1), view);
+        // //Front
+        // drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
 
-        // drawMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3, view);
-        // drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(1.0, 0.9, 0), glm::vec3(1, 0, 0), view);
-        // drawSphere(glm::vec3(0, 1, 0), 0.5, glm::vec3(0, 0.5, 0.5), view);
-        // for (unsigned int i = 0; i < 10; i++)
-        // {
-        //     drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);
-        // }
-
+        // Draw the scene
         for (int i = 0; i < mesh_group.size(); i++)
         {
             tuple<Mesh, glm::vec3> object = mesh_group.at(i);

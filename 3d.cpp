@@ -56,12 +56,39 @@ void planeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm:
 void objDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, int index)
 {
     glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, translationCoord);
+
     // model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
     glm::mat4 MVP = proj*view*model;
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     // glDrawArrays(GL_TRIANGLES, 0, 3*size); // 12*3 indices starting at 0 -> 12 triangles
 
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, index, GL_UNSIGNED_INT, 0);
+}
+
+void drawGenericObject(GLuint &VAO, GLuint matrixID,
+                        glm::mat4 proj,
+                        glm::mat4 view,
+                        int size,
+                        bool elemental,
+                        glm::vec3 translationVector = glm::vec3(0,0,0),
+                        glm::vec3 scaleVector = glm::vec3(1,1,1),
+                        GLfloat rotationAngle = 0,
+                        glm::vec3 rotationAxis = glm::vec3(1,0,0))
+{
+    glBindVertexArray(VAO);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, translationVector);
+    model = glm::scale(model, scaleVector);
+    model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
+    glm::mat4 MVP = proj*view*model;
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    if (elemental) {
+        glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
+    } else {
+        glDrawArrays(GL_TRIANGLES, 0, size*3);
+    }
+    glBindVertexArray(0);
 }
 
 bool loadAssImp(
@@ -209,16 +236,24 @@ int main()
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO;
     int i = 0;
-    if(loadAssImp("cubeX.obj", indices, vertices, normals)) {
-        GLfloat ModelVertexArray[108];
-        unsigned int indexList[36];
+    if(loadAssImp("simple_round5.obj", indices, vertices, normals)) {
+        GLfloat ModelVertexArray[108000];
+        GLfloat ModelColorArray[108000];
+        unsigned int indexList[108000];
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
+            // cout << ModelVertexArray[i] << ' ';
             ModelVertexArray[i++] = it->y;
+            // cout << ModelVertexArray[i] << ' ';
             ModelVertexArray[i++] = it->z;
+            // cout << ModelVertexArray[i] << '\n';
         }
+
         for (int j = 0; j < indices.size(); j++) {
             indexList[j] = indices[j];
+        }
+        for (int j = 0; j < i; i++) {
+            ModelColorArray[j++] = 1;
         }
 
         glGenVertexArrays(1, &ModelArrayID);
@@ -231,10 +266,10 @@ int main()
         glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        glGenBuffers(1, &ModelColorVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        // glGenBuffers(1, &ModelColorVBO);
+        // glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
+        // glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &EBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -269,26 +304,20 @@ int main()
 
     	glUseProgram(programID);
 
-        glBindVertexArray(VertexArrayID[0]);
         int num = 100;
         for (int i = 0; i < num; i++) {
-            // cubeDraw(glm::vec3(10.0f/num*i,10.0f/num*i,10.0f/num*i), matrixID, proj, view);
+            drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         }
-        glBindVertexArray(0);
+        drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
 
-        glBindVertexArray(ModelArrayID);
-        objDraw(glm::vec3(1,1,1), matrixID, proj, view, vertices.size(), indices.size());
-        glBindVertexArray(0);
-
-        glBindVertexArray(VertexArrayID[1]);
-        planeDraw(glm::vec3(0,0,0), matrixID, proj, view);
-        glBindVertexArray(0);
+        drawGenericObject(ModelArrayID, matrixID, proj, view, indices.size(), true);//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     //write delete code
 	glDeleteProgram(programID);
 	glDeleteVertexArrays(2, VertexArrayID);
+    glDeleteVertexArrays(1, &ModelArrayID);
 
 	glfwTerminate();
     return 0;

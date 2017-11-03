@@ -12,7 +12,8 @@
 #include "shader.hpp"
 #include "Camera.h"
 
-#define MAX_FOV 90
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 using namespace glm;
 using namespace std;
 typedef pair<GLuint, GLuint> VertexColorPair;
@@ -195,7 +196,9 @@ bool initOpenGL()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     return true;
 }
-Camera camera(1024, 768);
+
+Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
+
 void setCallBacks(GLFWwindow* window)
 {
     glfwMakeContextCurrent(window);
@@ -218,7 +221,7 @@ int main()
         return -1;
     }
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow( 1024, 768, "Tutorial 04 - Colored Cube", NULL, NULL);
+	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
 	if( window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
 		getchar();
@@ -251,7 +254,7 @@ int main()
         cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
-        glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), 4.0f/3.0f, 0.2f, 10.0f);
+        glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 10.0f);
         glm::mat4 view;
         view = camera.getCameraView();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

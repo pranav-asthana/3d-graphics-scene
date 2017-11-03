@@ -223,8 +223,18 @@ void generateModelVAO(string path, GLuint &ModelArrayID, GLuint &ModelVBO, GLuin
             indexList[j] = indices[j];
         }
         cout << path << i;
-        for (int j = 0; j < i; j++) {
-            ModelColorArray[j] = 0.5f;
+        for (int j = 0; j < i; j+=9) {
+            ModelColorArray[j] = 0;
+            ModelColorArray[j+1] = 0;
+            ModelColorArray[j+2] = 1;
+
+            ModelColorArray[j+3] = 1;
+            ModelColorArray[j+4] = 0;
+            ModelColorArray[j+5] = 0;
+
+            ModelColorArray[j+6] = 0;
+            ModelColorArray[j+7] = 1;
+            ModelColorArray[j+8] = 0;
         }
 
         indexSize = indices.size();

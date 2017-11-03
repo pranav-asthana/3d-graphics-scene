@@ -11,6 +11,7 @@
 #include <tuple>
 #include <unistd.h>
 #include <math.h>
+#include "scene.h"
 #include "sphere.h"
 #include "cube.h"
 #include "cylinder.h"
@@ -263,13 +264,20 @@ int main()
         glm::vec3(-2.0f,  0.0f, -20.0f),
     };
 
+    Scene * scene = new Scene();
+    glm::mat4 view = updateView();
+    // scene -> addCube(glm::vec3(0, 0, 0), glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0));
+    scene->addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3);
+    vector<tuple<Mesh, glm::vec3>> mesh_group = scene -> getMesh();
+
     while (!glfwWindowShouldClose(window)) {
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::mat4 view = updateView();
+        glm::mat4 old_view;
+        view = updateView();
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -289,13 +297,22 @@ int main()
         //Front
         drawCube(glm::vec3(0, 0, BOUND_Z2+1), glm::vec3((BOUND_X2-BOUND_X1+2), (BOUND_Y2+BOUND_Y1+1)*2, 1), glm::vec3(0, 0, 0.5), view);
 
-        drawMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3, view);
+        // drawMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3, view);
         // drawCylinder(glm::vec3(1, 1, 0), 1, 0.2, glm::vec3(1.0, 0.9, 0), glm::vec3(1, 0, 0), view);
         // drawSphere(glm::vec3(0, 1, 0), 0.5, glm::vec3(0, 0.5, 0.5), view);
         // for (unsigned int i = 0; i < 10; i++)
         // {
         //     drawCube(cubePositions[i], glm::vec3(2 ,2, 1), glm::vec3(1, 0, 0), view);
         // }
+
+        for (int i = 0; i < mesh_group.size(); i++)
+        {
+            tuple<Mesh, glm::vec3> object = mesh_group.at(i);
+            Mesh mesh = get<0>(object);
+            glm::vec3 color_vec = get<1>(object);
+            mesh.transform(view);
+            renderMesh(&mesh, color_vec);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();

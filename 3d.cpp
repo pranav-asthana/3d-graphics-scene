@@ -217,6 +217,8 @@ int main()
     glGenBuffers(1, &floorcolorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -235,12 +237,10 @@ int main()
 
     	// Send our transformation to the currently bound shader,
     	// in the "MVP" uniform
-        glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         // 2nd attribute buffer : colors
-        glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
 
@@ -249,15 +249,12 @@ int main()
             cubeDraw(glm::vec3(i,i,i), matrixID, proj, view);
         }
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-
-        glEnableVertexAttribArray(0);
+        // glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, floorvertexbuffer);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         // 2nd attribute buffer : colors
-        glEnableVertexAttribArray(1);
+        // glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, floorcolorbuffer);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
 
@@ -268,14 +265,14 @@ int main()
         glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
         glDrawArrays(GL_TRIANGLES, 0, 2*3);
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
 
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
 
     }
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
     glDeleteBuffers(1, &vertexbuffer);
 	glDeleteBuffers(1, &colorbuffer);
 	glDeleteProgram(programID);
@@ -351,7 +348,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    std::cout << "scrollback";
     if (fov >= 1.0f && fov <= MAX_FOV)
         fov -= yoffset;
     if (fov <= 1.0f)

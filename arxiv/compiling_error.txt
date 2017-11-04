@@ -1,0 +1,22 @@
+In file included from /usr/include/c++/5/tuple:35:0,
+                 from /home/nic/original-projects/3d-graphics-scene/3d.cpp:11:
+/usr/include/c++/5/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+ #error This file requires compiler and library support \
+  ^
+/home/nic/original-projects/3d-graphics-scene/3d.cpp: In function ‘void updateVertices(GLfloat*, glm::mat4, int)’:
+/home/nic/original-projects/3d-graphics-scene/3d.cpp:144:71: error: ‘printf’ was not declared in this scope
+         printf("%f %f %f\n", vertices[i], vertices[i+1], vertices[i+2]);
+                                                                       ^
+/home/nic/original-projects/3d-graphics-scene/3d.cpp:146:27: error: ‘printf’ was not declared in this scope
+     printf("-----------\n");
+                           ^
+/home/nic/original-projects/3d-graphics-scene/3d.cpp: In function ‘void printmatrix(glm::mat4)’:
+/home/nic/original-projects/3d-graphics-scene/3d.cpp:155:34: error: ‘printf’ was not declared in this scope
+             printf("%f ", M[j][i]);
+                                  ^
+/home/nic/original-projects/3d-graphics-scene/3d.cpp:157:20: error: ‘printf’ was not declared in this scope
+         printf("\n");
+                    ^
+/home/nic/original-projects/3d-graphics-scene/3d.cpp:159:41: error: ‘printf’ was not declared in this scope
+     printf("-------------------------\n");
+                                         ^

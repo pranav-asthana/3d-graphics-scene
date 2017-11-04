@@ -39,11 +39,7 @@ public:
 
     glm::mat4 getCameraView()
     {
-        if (!firstMouse) {
-            return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        } else {
-            return glm::lookAt(cameraPos, glm::vec3(0,0,0), cameraUp);
-        }
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
 
     float getFOV()

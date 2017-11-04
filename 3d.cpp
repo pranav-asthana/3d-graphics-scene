@@ -162,9 +162,9 @@ void generateModelVAO(string path, ObjectData &object)
 
     int i = 0;
     if(loadAssImp(path.c_str(), indices, vertices)) {
-        GLfloat ModelVertexArray[10800];
-        GLfloat ModelColorArray[10800];
-        unsigned int indexList[10800];
+        GLfloat ModelVertexArray[25600];
+        GLfloat ModelColorArray[25600];
+        unsigned int indexList[25600];
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
@@ -258,19 +258,19 @@ int main()
     vector<VertexColorPair> VBOArray;
     setupVAO(VertexArrayID, VBOArray);
 
+    glm::mat4 proj;
+    glm::mat4 view;
+
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         // cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
-        glm::mat4 proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
-        glm::mat4 view;
+        proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
         view = camera.getCameraView();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     	glUseProgram(programID);
-
         int num = 100;
         for (int i = 0; i < num; i++) {
             drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));

@@ -13,3 +13,4 @@ find_package(assimp REQUIRED)
 
 include_directories( ${OPENGL_INCLUDE_DIRS})
 target_link_libraries(3dviewer ${OPENGL_LIBRARIES} glfw GLEW assimp dl)
+add_subdirectory(src)

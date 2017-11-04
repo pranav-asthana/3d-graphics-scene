@@ -13,7 +13,6 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-
 #include "shader.hpp"
 #include "Camera.h"
 #include "Constants.h"
@@ -33,38 +32,9 @@ void processInput(GLFWwindow *window);
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-void cubeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view)
-{
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, translationCoord);
-    model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
-    glm::mat4 MVP = proj*view*model;
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 12*3); // 12*3 indices starting at 0 -> 12 triangles
-}
-
-void planeDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view)
-{
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
-    // model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    glm::mat4 MVP = proj*view*model;
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, 2*3);
-}
-
-void objDraw(glm::vec3 translationCoord, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, int index)
-{
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, translationCoord);
-
-    // model = glm::scale(model, vec3(100.0f, 100.0f, 100.0f));
-    glm::mat4 MVP = proj*view*model;
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
-    // glDrawArrays(GL_TRIANGLES, 0, 3*size); // 12*3 indices starting at 0 -> 12 triangles
-
-    glDrawElements(GL_TRIANGLES, index, GL_UNSIGNED_INT, 0);
-}
+struct ObjectData {
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
+};
 
 void drawGenericObject(GLuint &VAO, GLuint matrixID,
                         glm::mat4 proj,
@@ -91,37 +61,21 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID,
     glBindVertexArray(0);
 }
 
-bool loadAssImp(
-	const char * path,
-	std::vector<unsigned short> & indices,
-	std::vector<glm::vec3> & vertices,
-	std::vector<glm::vec3> & normals
-){
-
+bool loadAssImp(const char * path, std::vector<unsigned short> & indices, std::vector<glm::vec3> & vertices) {
 	Assimp::Importer importer;
-
-	const aiScene* scene = importer.ReadFile(path, 0/*aiProcess_JoinIdenticalVertices | aiProcess_SortByPType*/);
+	const aiScene* scene = importer.ReadFile(path, 0);
 	if( !scene) {
 		fprintf( stderr, importer.GetErrorString());
 		getchar();
 		return false;
 	}
-	const aiMesh* mesh = scene->mMeshes[0]; // In this simple example code we always use the 1rst mesh (in OBJ files there is often only one anyway)
-
+	const aiMesh* mesh = scene->mMeshes[0];
 	// Fill vertices positions
 	vertices.reserve(mesh->mNumVertices);
 	for(unsigned int i=0; i<mesh->mNumVertices; i++){
 		aiVector3D pos = mesh->mVertices[i];
 		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
 	}
-
-	// Fill vertices normals
-	normals.reserve(mesh->mNumVertices);
-	for(unsigned int i=0; i<mesh->mNumVertices; i++){
-		aiVector3D n = mesh->mNormals[i];
-		normals.push_back(glm::vec3(n.x, n.y, n.z));
-	}
-
 
 	// Fill face indices
 	indices.reserve(3*mesh->mNumFaces);
@@ -132,7 +86,6 @@ bool loadAssImp(
 		indices.push_back(mesh->mFaces[i].mIndices[2]);
 	}
 
-	// The "scene" pointer will be deleted automatically by "importer"
 	return true;
 }
 
@@ -202,14 +155,13 @@ void setCallBacks(GLFWwindow* window)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
-void generateModelVAO(string path, GLuint &ModelArrayID, GLuint &ModelVBO, GLuint &ModelColorVBO, GLuint &EBO, GLuint &indexSize)
+void generateModelVAO(string path, ObjectData &object)
 {
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
 
     int i = 0;
-    if(loadAssImp(path.c_str(), indices, vertices, normals)) {
+    if(loadAssImp(path.c_str(), indices, vertices)) {
         GLfloat ModelVertexArray[10800];
         GLfloat ModelColorArray[10800];
         unsigned int indexList[10800];
@@ -237,26 +189,26 @@ void generateModelVAO(string path, GLuint &ModelArrayID, GLuint &ModelVBO, GLuin
             ModelColorArray[j+8] = 0;
         }
 
-        indexSize = indices.size();
+        object.indexSize = indices.size();
         int size = i*sizeof(GLfloat);
 
-        glGenVertexArrays(1, &ModelArrayID);
-        glBindVertexArray(ModelArrayID);
+        glGenVertexArrays(1, &(object.ModelArrayID));
+        glBindVertexArray(object.ModelArrayID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        glGenBuffers(1, &ModelVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, ModelVBO);
+        glGenBuffers(1, &(object.ModelVBO));
+        glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
         glBufferData(GL_ARRAY_BUFFER, size, ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        glGenBuffers(1, &ModelColorVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, ModelColorVBO);
+        glGenBuffers(1, &(object.ModelColorVBO));
+        glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
         glBufferData(GL_ARRAY_BUFFER, size, ModelColorArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        glGenBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glGenBuffers(1, &(object.EBO));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexList),
                      indexList, GL_STATIC_DRAW);
 
@@ -289,11 +241,11 @@ int main()
         glfwTerminate();
         return false;
     }
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
-    generateModelVAO("5wtf.obj", ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize);
 
-    GLuint CarouselArrayID, CarouselVBO, CarouselColorVBO, CarouselEBO, CarouselIndexSize;
-    generateModelVAO("simple_round5.obj", CarouselArrayID, CarouselVBO, CarouselColorVBO, CarouselEBO, CarouselIndexSize);
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
+    ObjectData swing, carousel;
+    generateModelVAO("5wtf.obj", swing);
+    generateModelVAO("1simple_round.obj", carousel);
 
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -324,9 +276,8 @@ int main()
             drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         }
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(CarouselArrayID, matrixID, proj, view, CarouselIndexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
-
-        drawGenericObject(ModelArrayID, matrixID, proj, view, indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
 
         glfwSwapBuffers(window);
         glfwPollEvents();

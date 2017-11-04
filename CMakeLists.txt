@@ -12,4 +12,4 @@ find_package(GLEW REQUIRED)
 find_package(assimp REQUIRED)
 
 include_directories( ${OPENGL_INCLUDE_DIRS})
-target_link_libraries(3d ${OPENGL_LIBRARIES} glfw GLEW assimp dl)
+target_link_libraries(3dviewer ${OPENGL_LIBRARIES} glfw GLEW assimp dl)

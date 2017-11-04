@@ -120,23 +120,12 @@ void processInput(GLFWwindow *window)
         cameraPos.z = BOUND_Z2;
 }
 
-void renderMesh(Mesh * mesh, glm::vec3 color_vec)
+void renderMesh(Mesh * mesh, GLfloat * color_vector)
 {
     vector<GLfloat> v = mesh -> getVertices();
 
     int len = v.size();
     GLfloat * vertices = &v[0];
-
-
-    GLfloat color[] = {color_vec.x, color_vec.y, color_vec.z};
-    GLfloat color_vector[len];
-    for (int i = 0; i < len;)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            color_vector[i++] = color[j];
-        }
-    }
 
     glColorPointer(3, GL_FLOAT, 0, color_vector);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -205,10 +194,12 @@ int main()
     glm::mat4 view;
     Scene * scene = new Scene();
 
-    // scene-> addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 0.5, 0.5), 7, 3);
+    // scene -> addCube(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(1, 0, 0));
+    // scene-> addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
     scene -> addSeeSaw(glm::vec3(0, 0, 0), glm::vec3(0.2, 0.2, 0.7));
 
-    vector<tuple<Mesh, glm::vec3>> mesh_group = scene -> getMesh();
+    vector<Mesh> mesh_group = scene -> getMesh();
+    vector<vector<GLfloat>> color_vector_group = scene -> getColors();
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -240,11 +231,10 @@ int main()
         // Draw the scene
         for (int i = 0; i < mesh_group.size(); i++)
         {
-            tuple<Mesh, glm::vec3> object = mesh_group.at(i);
-            Mesh mesh = get<0>(object);
-            glm::vec3 color_vec = get<1>(object);
+            Mesh mesh = mesh_group.at(i);
+            GLfloat * color_vector = &color_vector_group.at(i)[0];
             mesh.transform(view);
-            renderMesh(&mesh, color_vec);
+            renderMesh(&mesh, color_vector);
         }
 
         glfwSwapBuffers(window);

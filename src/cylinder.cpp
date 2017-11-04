@@ -44,7 +44,5 @@ Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
     T = glm::rotate(T, angle_of_rotation, axis_of_rotation);
     mesh -> transform(T);
 
-    printf("%d\n", mesh->getVertices().size());
-
     return mesh;
 }

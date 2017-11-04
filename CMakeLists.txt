@@ -3,7 +3,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og -Wall -Wextra")
 project(opengl_assignment)
-add_executable(3d 3d.cpp shader.cpp)
+add_executable(3dviewer 3dviewer.cpp shader.cpp)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)

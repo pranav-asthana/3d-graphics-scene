@@ -144,9 +144,9 @@ bool initOpenGL()
     return true;
 }
 
-void setupMeshVAO(Mesh mesh, GLfloat* color_vector, ObjectData &object)
+void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVector)
 {
-    // ObjectData object;
+    ObjectData object;
 
     vector<GLfloat> v = mesh.getVertices();
     GLfloat* vertices = &v[0];
@@ -169,7 +169,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, ObjectData &object)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glBindVertexArray(0);
 
-    // objectVector.push_back(object);
+    objectVector.push_back(object);
     // int len = v.size();
 }
 
@@ -208,9 +208,9 @@ void generateModelVAO(string path, ObjectData &object)
 
         cout << path << i;
         for (int j = 0; j < i; j+=9) {
-            ModelColorArray[j] = 0;
-            ModelColorArray[j+1] = 0;
-            ModelColorArray[j+2] = 1;
+            ModelColorArray[j] = 0.1;
+            ModelColorArray[j+1] = 0.0;
+            ModelColorArray[j+2] = 0.5;
 
             ModelColorArray[j+3] = 0;
             ModelColorArray[j+4] = 0;
@@ -295,11 +295,16 @@ int main()
 
     Scene scene = Scene();
     scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
+    scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
 
-    ObjectData meshObj;
-    setupMeshVAO(mesh_group.at(0), &color_vector_group.at(0)[0], meshObj);
+    vector<ObjectData> sceneMesh;
+
+    for (int i = 0; i < mesh_group.size(); i++) {
+        setupMeshVAO(mesh_group.at(i), &color_vector_group.at(i)[0], sceneMesh);
+    }
+
 
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -318,7 +323,13 @@ int main()
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize, false);
+
+        // for (int i = 0; i < sceneMesh.size(); i++) {
+        //     drawGenericObject(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize, false);
+        // }
+        for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
+            drawGenericObject(it->ModelArrayID, matrixID, proj, view, it->indexSize, false);
+        }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

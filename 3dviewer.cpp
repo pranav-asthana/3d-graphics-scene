@@ -21,7 +21,7 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define SQUARE_SIDE 30.0f
-#define MIN_ALT 1.0f
+#define MIN_ALT 0.5f
 #define MAX_ALT 10.0f
 
 using namespace glm;
@@ -309,6 +309,9 @@ int main()
     Scene scene = Scene();
     scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
     scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
+    scene.addFence(glm::vec4(x_min, x_max, z_min, z_max));
+    scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
+
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
 
@@ -329,11 +332,11 @@ int main()
         view = camera.getCameraView();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	glUseProgram(programID);
-        int num = 100;
-        for (int i = 0; i < num; i++) {
-            drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
-        }
-        drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
+        // int num = 100;
+        // for (int i = 0; i < num; i++) {
+        //     drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
+        // }
+        // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
 

@@ -18,7 +18,7 @@ vector<GLfloat> SeeSaw::getColors()
     return colors;
 }
 
-Mesh * SeeSaw::drawHandle()
+Mesh * SeeSaw::getHandle()
 {
     Mesh * handleMesh = new Mesh();
     glm::mat4 T;
@@ -69,11 +69,11 @@ void SeeSaw::createShaft()
     T = glm::translate(glm::mat4(1.0), glm::vec3(2, 0, -0.25));
     seat2Mesh->transform(T);
 
-    Mesh * handle1 = drawHandle();
+    Mesh * handle1 = getHandle();
     T = glm::translate(glm::mat4(1.0), glm::vec3(2.02, 0.2, 0.2));
     handle1 -> transform(T);
 
-    Mesh * handle2 = drawHandle();
+    Mesh * handle2 = getHandle();
     T = glm::translate(glm::mat4(1.0), glm::vec3(-2.02, 0.2, 0.2));
     handle2 -> transform(T);
 
@@ -95,11 +95,45 @@ void SeeSaw::createShaft()
     delete seat2;
 }
 
+void SeeSaw::createBase()
+{
+    glm::mat4 T;
+
+    Cylinder * s1 = new Cylinder(0.76, 0.05, glm::vec3(0, 1, 0));
+    Mesh * s1Mesh = s1 -> getMesh();
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, -0.5, -0.75));
+    s1Mesh -> transform(T);
+
+    Cylinder * s2 = new Cylinder(0.76, 0.05, glm::vec3(0, 1, 0));
+    Mesh * s2Mesh = s2 -> getMesh();
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, -0.5, 0.75));
+    s2Mesh -> transform(T);
+
+    Cylinder * top = new Cylinder(1.5, 0.05, glm::vec3(0, 1, 0));
+    Mesh * topMesh = top -> getMesh();
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, -0.1, 0));
+    T = glm::rotate(T, (float)glm::radians(90.0), glm::vec3(1, 0, 0));
+    topMesh -> transform(T);
+
+    this -> mesh -> joinMesh(s1Mesh);
+    this -> mesh -> joinMesh(s2Mesh);
+    this -> mesh -> joinMesh(topMesh);
+
+    vector<GLfloat> color_base = getColorVector(glm::vec3(0.7, 0.7, 0.7), s1Mesh->getVertices().size()*3);
+    colors = joinColors(colors, color_base);
+
+    delete s1;
+    delete s2;
+    delete top;
+}
+
 void SeeSaw::createMesh()
 {
     createShaft();
-
     glm::mat4 T;
     T = glm::rotate(glm::mat4(1.0), (float)glm::radians(15.0), glm::vec3(0, 0, 1));
+    this -> mesh -> transform(T);
+    createBase();
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, 1, 0));
     this -> mesh -> transform(T);
 }

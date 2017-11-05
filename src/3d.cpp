@@ -192,14 +192,15 @@ int main()
     };
 
     glm::mat4 view;
-    Scene * scene = new Scene();
+    Scene scene = Scene();
 
-    // scene -> addCube(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(1, 0, 0));
-    // scene-> addMonkeyBars(glm::vec3(-2, 2, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
-    scene -> addSeeSaw(glm::vec3(0, 0, 0), glm::vec3(0.2, 0.2, 0.7));
+    scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
+    scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
+    scene.addFence(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
+    scene.addFloor(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
 
-    vector<Mesh> mesh_group = scene -> getMesh();
-    vector<vector<GLfloat>> color_vector_group = scene -> getColors();
+    vector<Mesh> mesh_group = scene.getMesh();
+    vector<vector<GLfloat>> color_vector_group = scene.getColors();
 
     while (!glfwWindowShouldClose(window)) {
 

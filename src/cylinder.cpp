@@ -37,12 +37,15 @@ Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
     }
 
     glm::vec3 initial_orientation = glm::vec3(0, 0, 1);
-    glm::vec3 axis_of_rotation = glm::cross(initial_orientation, orientation);
-    float angle_of_rotation = acos(glm::dot(glm::normalize(orientation), initial_orientation));
+    if (initial_orientation != orientation)
+    {
+        glm::vec3 axis_of_rotation = glm::cross(initial_orientation, orientation);
+        float angle_of_rotation = acos(glm::dot(glm::normalize(orientation), initial_orientation));
 
-    glm::mat4 T;
-    T = glm::rotate(T, angle_of_rotation, axis_of_rotation);
-    mesh -> transform(T);
+        glm::mat4 T;
+        T = glm::rotate(T, angle_of_rotation, axis_of_rotation);
+        mesh -> transform(T);
+    }
 
     return mesh;
 }

@@ -16,8 +16,9 @@ public:
 private:
     Mesh * mesh;
     vector<GLfloat> colors;
-    Mesh * drawHandle();
+    Mesh * getHandle();
     void createShaft();
+    void createBase();
     void createMesh();
 };
 #endif

@@ -144,7 +144,47 @@ bool initOpenGL()
     return true;
 }
 
-// void setupMeshVAO(Mesh mesh, )
+void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVector)
+{
+    ObjectData object;
+
+    vector<GLfloat> v = mesh.getVertices();
+    GLfloat* vertices = &v[0];
+    object.indexSize = v.size()/3; //# of vertices = arraysize/3 (x,y,z)
+    int size = object.indexSize*sizeof(GLfloat);
+
+    glGenVertexArrays(1, &(object.ModelArrayID));
+    glBindVertexArray(object.ModelArrayID);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &(object.ModelVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glGenBuffers(1, &(object.ModelColorVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
+    glBufferData(GL_ARRAY_BUFFER, size, color_vector, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glBindVertexArray(0);
+
+    objectVector.push_back(object);
+    // int len = v.size();
+}
+
+void drawGenericMesh(GLuint &VAO, GLuint matrixID,
+                        glm::mat4 proj,
+                        glm::mat4 view,
+                        int size)
+{
+    glBindVertexArray(VAO);
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 MVP = proj*view*model;
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    glDrawArrays(GL_TRIANGLES, 0, size);
+    glBindVertexArray(0);
+}
 
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -168,6 +208,7 @@ void generateModelVAO(string path, ObjectData &object)
         GLfloat ModelVertexArray[vertices.size()*3];
         GLfloat ModelColorArray[vertices.size()*3];
         unsigned int indexList[indices.size()];
+
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
@@ -177,6 +218,7 @@ void generateModelVAO(string path, ObjectData &object)
         for (int j = 0; j < indices.size(); j++) {
             indexList[j] = indices[j];
         }
+
         cout << path << i;
         for (int j = 0; j < i; j+=9) {
             ModelColorArray[j] = 0;

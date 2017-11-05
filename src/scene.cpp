@@ -29,9 +29,6 @@ void Scene::addCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec)
 
     meshes.push_back(mesh);
     colors.push_back(color_vector);
-
-    // delete cube;
-    // delete mesh;
 }
 
 void Scene::addSphere(glm::vec3 center, float radius, glm::vec3 color_vec, int detail_level)
@@ -48,9 +45,6 @@ void Scene::addSphere(glm::vec3 center, float radius, glm::vec3 color_vec, int d
 
     meshes.push_back(mesh);
     colors.push_back(color_vector);
-
-    // delete sphere;
-    // delete mesh;
 }
 
 void Scene::addCylinder(glm::vec3 center, float height, float radius, glm::vec3 color_vec, glm::vec3 orientation)
@@ -67,9 +61,6 @@ void Scene::addCylinder(glm::vec3 center, float height, float radius, glm::vec3 
 
     meshes.push_back(mesh);
     colors.push_back(color_vector);
-
-    // delete cylinder;
-    // delete mesh;
 }
 
 void Scene::addMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, int height, glm::mat4 transformation)
@@ -86,9 +77,6 @@ void Scene::addMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, i
 
     meshes.push_back(mesh);
     colors.push_back(color_vector);
-
-    // delete monkeybars;
-    // delete mesh;
 }
 
 void Scene::addSeeSaw(glm::vec3 position, glm::vec3 color_vec, glm::mat4 transformation)
@@ -103,9 +91,22 @@ void Scene::addSeeSaw(glm::vec3 position, glm::vec3 color_vec, glm::mat4 transfo
 
     meshes.push_back(mesh);
     colors.push_back(color_vector);
+}
 
-    // delete seesaw;
-    // delete mesh;
+void Scene::addSlide(glm::vec3 position, glm::vec3 color_vec, int height, glm::mat4 transformation)
+{
+    Slide slide = Slide(height);
+    Mesh mesh = slide.getMesh();
+    // vector<GLfloat> color_vector = slide.getColors();
+    int len = (mesh.getVertices()).size();
+    vector<GLfloat> color_vector = getColorVector(color_vec, len);
+
+    glm::mat4 T;
+    T = glm::translate(T, position);
+    mesh.transform(T*transformation);
+
+    meshes.push_back(mesh);
+    colors.push_back(color_vector);
 }
 
 void Scene::addFence(glm::vec4 bounds) //x-z bounds
@@ -130,5 +131,5 @@ void Scene::addFloor(glm::vec4 bounds) //x-z bounds
 
     for (float i = bounds.z; i <= bounds.w; i+=1)
         addCylinder(glm::vec3(bounds.x+bounds.y, 0, i), (float) bounds.x-bounds.y, (float) 0.005, glm::vec3(0.7, 0.7, 0.7), glm::vec3(1, 0, 0));
-    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x, 0.1, bounds.w-bounds.z), glm::vec3(0.5, 0.5, 0.5));
+    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x, 0.1, bounds.w-bounds.z), glm::vec3(0.25, 0.5, 0));
 }

@@ -181,9 +181,12 @@ int main()
     glm::mat4 view;
     Scene scene = Scene();
 
-    scene.addCube(glm::vec3(0, 0, 0), glm::vec3(0.5, 1, 0.5), glm::vec3(0.5, 0.5, 0.5));
+    glm::mat4 T;
+    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0), glm::vec3(0, 1, 0));
+
     scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
     scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
+    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.7, 0, 0), 3, T);
     scene.addFence(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
     scene.addFloor(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
 

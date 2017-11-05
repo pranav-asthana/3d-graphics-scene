@@ -20,6 +20,14 @@ class Camera {
     float lastX;
     float lastY;
     float MAX_FOV;
+
+    GLfloat x_min;
+    GLfloat x_max;
+    GLfloat y_min;
+    GLfloat y_max;
+    GLfloat z_min;
+    GLfloat z_max;
+
     bool firstMouse;
 
 public:
@@ -35,6 +43,34 @@ public:
         cameraPos = glm::vec3(0.0f, 2.0f, 3.0f);
         cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        this->x_min = -100;
+        this->x_max = 100;
+        this->y_min = -100;
+        this->y_max = 100;
+        this->z_min = -100;
+        this->z_max = 100;
+    }
+
+    Camera(int screenHeight, int screenWidth, GLfloat x_min, GLfloat x_max, GLfloat y_min, GLfloat y_max, GLfloat z_min, GLfloat z_max)
+    {
+        lastX = screenWidth/2.0f;
+        lastY = screenHeight/2.0f;
+        firstMouse = true;
+        yaw = -90.0f;
+        pitch =  0.0f;
+        MAX_FOV = 90;
+        fov = MAX_FOV;
+        cameraPos = glm::vec3(0.0f, 2.0f, 3.0f);
+        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+        this->x_min = x_min;
+        this->x_max = x_max;
+        this->y_min = y_min;
+        this->y_max = y_max;
+        this->z_min = z_min;
+        this->z_max = z_max;
     }
 
     glm::mat4 getCameraView()
@@ -96,14 +132,32 @@ public:
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        float cameraSpeed = 1.0 * deltaTime;
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        float cameraSpeed = 2.0 * deltaTime;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             cameraPos += cameraSpeed * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             cameraPos -= cameraSpeed * cameraFront;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
             cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        }
+
+        if (cameraPos.x < x_min)
+            cameraPos.x = x_min;
+        if (cameraPos.x > x_max)
+            cameraPos.x = x_max;
+        if (cameraPos.y < y_min)
+            cameraPos.y = y_min;
+        if (cameraPos.y > y_max)
+            cameraPos.y = y_max;
+        if (cameraPos.z < z_min)
+            cameraPos.z = z_min;
+        if (cameraPos.z > z_max)
+            cameraPos.z = z_max;
     }
 };

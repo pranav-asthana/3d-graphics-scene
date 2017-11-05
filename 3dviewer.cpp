@@ -20,8 +20,20 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
+#define SQUARE_SIDE 30.0f
+#define MIN_ALT 1.0f
+#define MAX_ALT 10.0f
+
 using namespace glm;
 using namespace std;
+
+const GLfloat x_min = -SQUARE_SIDE;
+const GLfloat x_max = SQUARE_SIDE;
+const GLfloat y_min = MIN_ALT;
+const GLfloat y_max = MAX_ALT;
+const GLfloat z_min = -SQUARE_SIDE;
+const GLfloat z_max = SQUARE_SIDE;
+
 typedef pair<GLuint, GLuint> VertexColorPair;
 GLFWwindow* window;
 
@@ -173,7 +185,8 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     // int len = v.size();
 }
 
-Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
+// Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
+Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
 
 void setCallBacks(GLFWwindow* window)
 {
@@ -324,9 +337,6 @@ int main()
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
 
-        // for (int i = 0; i < sceneMesh.size(); i++) {
-        //     drawGenericObject(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize, false);
-        // }
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, matrixID, proj, view, it->indexSize, false);
         }

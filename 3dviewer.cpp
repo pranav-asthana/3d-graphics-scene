@@ -16,6 +16,7 @@
 #include "shader.hpp"
 #include "Camera.h"
 #include "Constants.h"
+#include "src/scene.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -143,6 +144,35 @@ bool initOpenGL()
     return true;
 }
 
+void setupMeshVAO(Mesh mesh, GLfloat* color_vector, ObjectData &object)
+{
+    // ObjectData object;
+
+    vector<GLfloat> v = mesh.getVertices();
+    GLfloat* vertices = &v[0];
+    object.indexSize = v.size()/3; //# of vertices = arraysize/3 (x,y,z)
+    int size = v.size()*sizeof(GLfloat);
+
+    glGenVertexArrays(1, &(object.ModelArrayID));
+    glBindVertexArray(object.ModelArrayID);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &(object.ModelVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glGenBuffers(1, &(object.ModelColorVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
+    glBufferData(GL_ARRAY_BUFFER, size, color_vector, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glBindVertexArray(0);
+
+    // objectVector.push_back(object);
+    // int len = v.size();
+}
+
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 void setCallBacks(GLFWwindow* window)
@@ -162,9 +192,10 @@ void generateModelVAO(string path, ObjectData &object)
 
     int i = 0;
     if(loadAssImp(path.c_str(), indices, vertices)) {
-        GLfloat ModelVertexArray[25600];
-        GLfloat ModelColorArray[25600];
-        unsigned int indexList[25600];
+        GLfloat ModelVertexArray[vertices.size()*3];
+        GLfloat ModelColorArray[vertices.size()*3];
+        unsigned int indexList[indices.size()];
+
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
@@ -174,18 +205,19 @@ void generateModelVAO(string path, ObjectData &object)
         for (int j = 0; j < indices.size(); j++) {
             indexList[j] = indices[j];
         }
+
         cout << path << i;
         for (int j = 0; j < i; j+=9) {
             ModelColorArray[j] = 0;
             ModelColorArray[j+1] = 0;
             ModelColorArray[j+2] = 1;
 
-            ModelColorArray[j+3] = 1;
+            ModelColorArray[j+3] = 0;
             ModelColorArray[j+4] = 0;
             ModelColorArray[j+5] = 0;
 
             ModelColorArray[j+6] = 0;
-            ModelColorArray[j+7] = 1;
+            ModelColorArray[j+7] = 0;
             ModelColorArray[j+8] = 0;
         }
 
@@ -261,6 +293,14 @@ int main()
     glm::mat4 proj;
     glm::mat4 view;
 
+    Scene scene = Scene();
+    scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
+    vector<Mesh> mesh_group = scene.getMesh();
+    vector<vector<GLfloat>> color_vector_group = scene.getColors();
+
+    ObjectData meshObj;
+    setupMeshVAO(mesh_group.at(0), &color_vector_group.at(0)[0], meshObj);
+
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -278,7 +318,7 @@ int main()
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-
+        drawGenericObject(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize, false);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

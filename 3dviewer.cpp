@@ -173,19 +173,6 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, ObjectData &object)
     // int len = v.size();
 }
 
-void drawGenericMesh(GLuint &VAO, GLuint matrixID,
-                        glm::mat4 proj,
-                        glm::mat4 view,
-                        int size)
-{
-    glBindVertexArray(VAO);
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 MVP = proj*view*model;
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
-    glDrawArrays(GL_TRIANGLES, 0, size);
-    glBindVertexArray(0);
-}
-
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 void setCallBacks(GLFWwindow* window)
@@ -331,7 +318,7 @@ int main()
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericMesh(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize);
+        drawGenericObject(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize, false);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

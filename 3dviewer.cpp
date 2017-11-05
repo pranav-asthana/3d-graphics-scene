@@ -20,7 +20,7 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 30.0f
+#define SQUARE_SIDE 15.0f
 #define MIN_ALT 0.5f
 #define MAX_ALT 10.0f
 
@@ -221,17 +221,17 @@ void generateModelVAO(string path, ObjectData &object)
 
         cout << path << i;
         for (int j = 0; j < i; j+=9) {
-            ModelColorArray[j] = 0.1;
-            ModelColorArray[j+1] = 0.0;
-            ModelColorArray[j+2] = 0.5;
+            ModelColorArray[j] = 1.0;
+            ModelColorArray[j+1] = 1.0;
+            ModelColorArray[j+2] = 0.0;
 
-            ModelColorArray[j+3] = 0;
-            ModelColorArray[j+4] = 0;
-            ModelColorArray[j+5] = 0;
+            ModelColorArray[j+3] = 0.7;
+            ModelColorArray[j+4] = 0.7;
+            ModelColorArray[j+5] = 0.2;
 
-            ModelColorArray[j+6] = 0;
-            ModelColorArray[j+7] = 0;
-            ModelColorArray[j+8] = 0;
+            ModelColorArray[j+6] = 0.7;
+            ModelColorArray[j+7] = 0.7;
+            ModelColorArray[j+8] = 0.2;
         }
 
         object.indexSize = indices.size();
@@ -309,6 +309,9 @@ int main()
     Scene scene = Scene();
     scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
     scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
+    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.7, 0, 0), 3,
+                    glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0),
+                    glm::vec3(0, 1, 0)));
     scene.addFence(glm::vec4(x_min, x_max, z_min, z_max));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
 
@@ -337,7 +340,7 @@ int main()
         //     drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         // }
         // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {

@@ -20,6 +20,7 @@ class Camera {
     float lastX;
     float lastY;
     float MAX_FOV;
+    float cameraSpeed;
 
     GLfloat x_min;
     GLfloat x_max;
@@ -61,8 +62,8 @@ public:
         pitch =  0.0f;
         MAX_FOV = 90;
         fov = MAX_FOV;
-        cameraPos = glm::vec3(0.0f, 2.0f, 3.0f);
-        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        cameraPos = glm::vec3(x_min, y_max, z_min);
+        cameraFront = glm::vec3(1.0f, 0.0f, 1.0f);
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
         this->x_min = x_min;

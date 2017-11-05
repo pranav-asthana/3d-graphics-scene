@@ -9,10 +9,10 @@ class Icosahedron
 public:
     Icosahedron(float radius);
 
-    Mesh * getMesh();
+    Mesh getMesh();
 private:
-    Mesh * mesh;
+    Mesh mesh;
 
-    Mesh * createMesh(float radius);
+    Mesh createMesh(float radius);
 };
 #endif

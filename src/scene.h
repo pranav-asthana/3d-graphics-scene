@@ -12,6 +12,7 @@
 #include "cylinder.h"
 #include "monkeybars.h"
 #include "seesaw.h"
+#include "slide.h"
 
 class Scene
 {
@@ -26,6 +27,7 @@ public:
 
     void addMonkeyBars(glm::vec3 position, glm::vec3 color_vec, int length, int height, glm::mat4 transformation=glm::mat4(1.0));
     void addSeeSaw(glm::vec3 position, glm::vec3 color_vec, glm::mat4 transformation=glm::mat4(1.0));
+    void addSlide(glm::vec3 position, glm::vec3 color_vec, int height, glm::mat4 transformation=glm::mat4(1.0));
 
     void addFence(glm::vec4 bounds);
     void addFloor(glm::vec4 bounds);

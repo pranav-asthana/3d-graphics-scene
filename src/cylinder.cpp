@@ -8,14 +8,14 @@ Cylinder::Cylinder(float height, float radius, glm::vec3 orientation)
     mesh = createMesh(height, radius, orientation);
 }
 
-Mesh * Cylinder::getMesh()
+Mesh Cylinder::getMesh()
 {
     return mesh;
 }
 
-Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
+Mesh Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
 {
-    Mesh * mesh = new Mesh();
+    Mesh mesh = Mesh();
 
     int num_segments = 36;
 
@@ -33,7 +33,7 @@ Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
 
     for (int i = 0; i < num_segments; i += 2)
     {
-        mesh -> addQuad(vertices[i + 0], vertices[i + 1], vertices[i + 3], vertices[i + 2]);
+        mesh.addQuad(vertices[i + 0], vertices[i + 1], vertices[i + 3], vertices[i + 2]);
     }
 
     glm::vec3 initial_orientation = glm::vec3(0, 0, 1);
@@ -44,7 +44,7 @@ Mesh * Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
 
         glm::mat4 T;
         T = glm::rotate(T, angle_of_rotation, axis_of_rotation);
-        mesh -> transform(T);
+        mesh.transform(T);
     }
 
     return mesh;

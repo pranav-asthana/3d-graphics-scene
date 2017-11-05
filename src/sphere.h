@@ -7,9 +7,9 @@ class Sphere
 {
 public:
     Sphere(float radius, int detail_level);
-    Mesh * getMesh();
+    Mesh getMesh();
 private:
-    Mesh * sphereMesh;
-    Mesh * fromIcosahedron(Icosahedron * i, float radius, int detail_level);
+    Mesh sphereMesh;
+    Mesh fromIcosahedron(Icosahedron i, float radius, int detail_level);
 };
 #endif

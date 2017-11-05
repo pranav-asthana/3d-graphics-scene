@@ -9,11 +9,11 @@ class MonkeyBars
 {
 public:
     MonkeyBars(int length, int height);
-    Mesh * getMesh();
+    Mesh getMesh();
 
 private:
-    Mesh * mesh;
+    Mesh mesh;
     void createMesh(int length, int height);
-    Mesh * createSideMesh(int size);
+    Mesh createSideMesh(int size);
 };
 #endif

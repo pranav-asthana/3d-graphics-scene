@@ -288,8 +288,9 @@ int main()
     }
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
-    ObjectData swing, carousel;
-    generateModelVAO("5wtf.obj", swing);
+    ObjectData swing, carousel, swingChair;
+    generateModelVAO("swing_seat.obj", swingChair);
+    generateModelVAO("swing_frame.obj", swing);
     generateModelVAO("1simple_round.obj", carousel);
 
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -342,6 +343,8 @@ int main()
         // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(swingChair.ModelArrayID, matrixID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1), (float)glfwGetTime()*180.0f, glm::vec3(10,5,1));
+        // drawGenericObject(GLuint &VAO, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, optional glm::vec3 translationVector, optional glm::vec3 scaleVector, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, matrixID, proj, view, it->indexSize, false);

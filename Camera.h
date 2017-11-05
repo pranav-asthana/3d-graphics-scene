@@ -63,6 +63,7 @@ public:
         MAX_FOV = 90;
         fov = MAX_FOV;
         cameraPos = glm::vec3(x_min, y_max, z_min);
+        cameraPos = glm::vec3(0, y_min+3, 0);
         cameraFront = glm::vec3(1.0f, 0.0f, 1.0f);
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -133,7 +134,7 @@ public:
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        float cameraSpeed = 2.0 * deltaTime;
+        float cameraSpeed = 5.0 * deltaTime;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             cameraPos += cameraSpeed * cameraFront;

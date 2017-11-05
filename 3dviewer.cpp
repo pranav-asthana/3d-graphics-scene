@@ -144,14 +144,14 @@ bool initOpenGL()
     return true;
 }
 
-void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVector)
+void setupMeshVAO(Mesh mesh, GLfloat* color_vector, ObjectData &object)
 {
-    ObjectData object;
+    // ObjectData object;
 
     vector<GLfloat> v = mesh.getVertices();
     GLfloat* vertices = &v[0];
     object.indexSize = v.size()/3; //# of vertices = arraysize/3 (x,y,z)
-    int size = object.indexSize*sizeof(GLfloat);
+    int size = v.size()*sizeof(GLfloat);
 
     glGenVertexArrays(1, &(object.ModelArrayID));
     glBindVertexArray(object.ModelArrayID);
@@ -169,7 +169,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glBindVertexArray(0);
 
-    objectVector.push_back(object);
+    // objectVector.push_back(object);
     // int len = v.size();
 }
 
@@ -306,6 +306,14 @@ int main()
     glm::mat4 proj;
     glm::mat4 view;
 
+    Scene scene = Scene();
+    scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
+    vector<Mesh> mesh_group = scene.getMesh();
+    vector<vector<GLfloat>> color_vector_group = scene.getColors();
+
+    ObjectData meshObj;
+    setupMeshVAO(mesh_group.at(0), &color_vector_group.at(0)[0], meshObj);
+
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -323,7 +331,7 @@ int main()
         drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-
+        drawGenericMesh(meshObj.ModelArrayID, matrixID, proj, view, meshObj.indexSize);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

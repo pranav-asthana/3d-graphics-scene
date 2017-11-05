@@ -16,6 +16,7 @@
 #include "shader.hpp"
 #include "Camera.h"
 #include "Constants.h"
+#include "src/scene.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -143,6 +144,8 @@ bool initOpenGL()
     return true;
 }
 
+// void setupMeshVAO(Mesh mesh, )
+
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 void setCallBacks(GLFWwindow* window)
@@ -162,9 +165,9 @@ void generateModelVAO(string path, ObjectData &object)
 
     int i = 0;
     if(loadAssImp(path.c_str(), indices, vertices)) {
-        GLfloat ModelVertexArray[25600];
-        GLfloat ModelColorArray[25600];
-        unsigned int indexList[25600];
+        GLfloat ModelVertexArray[vertices.size()*3];
+        GLfloat ModelColorArray[vertices.size()*3];
+        unsigned int indexList[indices.size()];
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;

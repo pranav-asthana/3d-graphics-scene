@@ -73,5 +73,4 @@ void Mesh::joinMesh(Mesh * mesh)
 
     vertices = new_vertices;
     triangles = new_triangles;
-    printf("%d\n", vertices.size());
 }

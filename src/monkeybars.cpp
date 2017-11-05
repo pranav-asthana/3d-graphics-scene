@@ -43,7 +43,6 @@ Mesh * MonkeyBars::createSideMesh(int size)
 
 void MonkeyBars::createMesh(int length, int height)
 {
-    height = 4;
     Mesh * side1 = createSideMesh(height);
     Mesh * side2 = createSideMesh(height);
     Mesh * top = createSideMesh(length);
@@ -61,4 +60,7 @@ void MonkeyBars::createMesh(int length, int height)
     side1 -> joinMesh(top);
 
     this -> mesh = side1;
+
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, height/2 + 0.5  + 0.5*((1&height%2)), 0));
+    this -> mesh -> transform(T);
 }

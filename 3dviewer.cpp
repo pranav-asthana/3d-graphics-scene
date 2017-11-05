@@ -180,12 +180,12 @@ void generateModelVAO(string path, ObjectData &object)
             ModelColorArray[j+1] = 0;
             ModelColorArray[j+2] = 1;
 
-            ModelColorArray[j+3] = 1;
+            ModelColorArray[j+3] = 0;
             ModelColorArray[j+4] = 0;
             ModelColorArray[j+5] = 0;
 
             ModelColorArray[j+6] = 0;
-            ModelColorArray[j+7] = 1;
+            ModelColorArray[j+7] = 0;
             ModelColorArray[j+8] = 0;
         }
 

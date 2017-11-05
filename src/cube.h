@@ -9,10 +9,10 @@ class Cube
 public:
     Cube(float width, float height, float depth);
 
-    Mesh * getMesh();
+    Mesh getMesh();
 private:
-    Mesh * mesh;
+    Mesh mesh;
 
-    Mesh * createMesh(float x, float y, float z);
+    Mesh createMesh(float x, float y, float z);
 };
 #endif

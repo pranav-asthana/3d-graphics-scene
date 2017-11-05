@@ -44,22 +44,21 @@ vector<Triangle> Mesh::getTriangles()
 
 void Mesh::transform(glm::mat4 transformation)
 {
-    vector<GLfloat> vertices = this -> getVertices();
-    Mesh * mesh = new Mesh();
+    vector<GLfloat> vertices = this->vertices;
+    Mesh mesh = Mesh();
     for (int i = 0; i < vertices.size(); i+=3)
     {
         glm::vec4 vertex = glm::vec4(vertices[i+0], vertices[i+1], vertices[i+2], 1.0f);
         vertex = transformation * vertex;
-        mesh -> addVertex(glm::vec3(vertex));
+        mesh.addVertex(glm::vec3(vertex));
     }
-    this -> vertices = mesh -> getVertices();
-    free(mesh);
+    this->vertices = mesh.getVertices();
 }
 
-void Mesh::joinMesh(Mesh * mesh)
+void Mesh::joinMesh(Mesh mesh)
 {
-    vector<GLfloat> vertices2 = mesh->getVertices();
-    vector<Triangle> triangles2 = mesh->getTriangles();
+    vector<GLfloat> vertices2 = mesh.getVertices();
+    vector<Triangle> triangles2 = mesh.getTriangles();
 
     vector<GLfloat> new_vertices;
     new_vertices.reserve(vertices.size() + vertices2.size());

@@ -10,13 +10,13 @@ class SeeSaw
 {
 public:
     SeeSaw();
-    Mesh * getMesh();
+    Mesh getMesh();
     vector<GLfloat> getColors();
 
 private:
-    Mesh * mesh;
+    Mesh mesh;
     vector<GLfloat> colors;
-    Mesh * getHandle();
+    Mesh getHandle();
     void createShaft();
     void createBase();
     void createMesh();

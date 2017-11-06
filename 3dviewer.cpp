@@ -49,7 +49,7 @@ struct ObjectData {
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
 };
 
-void drawGenericObject(GLuint &VAO, GLuint matrixID,
+void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID,
                         glm::mat4 proj,
                         glm::mat4 view,
                         int size,
@@ -66,6 +66,7 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID,
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
     if (elemental) {
         glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
     } else {
@@ -307,6 +308,7 @@ int main()
 
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
+    GLuint modelID = glGetUniformLocation(programID, "model");
 
     GLuint VertexArrayID[2];
     vector<VertexColorPair> VBOArray;
@@ -349,13 +351,13 @@ int main()
         //     drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         // }
         // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
-        drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(swingChair.ModelArrayID, matrixID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1), (float)glfwGetTime()*180.0f, glm::vec3(10,5,1));
+        drawGenericObject(carousel.ModelArrayID, matrixID, modelID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(swing.ModelArrayID, matrixID, modelID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(swingChair.ModelArrayID, matrixID, modelID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1), (float)glfwGetTime()*180.0f, glm::vec3(10,5,1));
         // drawGenericObject(GLuint &VAO, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, optional glm::vec3 translationVector, optional glm::vec3 scaleVector, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
-            drawGenericObject(it->ModelArrayID, matrixID, proj, view, it->indexSize, false);
+            drawGenericObject(it->ModelArrayID, matrixID, modelID, proj, view, it->indexSize, false);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();

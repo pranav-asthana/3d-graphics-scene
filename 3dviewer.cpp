@@ -74,7 +74,9 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID,
     glBindVertexArray(0);
 }
 
-bool loadAssImp(const char * path, std::vector<unsigned short> & indices, std::vector<glm::vec3> & vertices) {
+bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
+                std::vector<glm::vec3> &vertices,
+                std::vector<glm::vec3> &normals) {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, 0);
 	if( !scene) {
@@ -90,6 +92,11 @@ bool loadAssImp(const char * path, std::vector<unsigned short> & indices, std::v
 		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
 	}
 
+    normals.reserve(mesh->mNumVertices);
+	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+		aiVector3D n = mesh->mNormals[i];
+		normals.push_back(glm::vec3(n.x, n.y, n.z));
+    }
 	// Fill face indices
 	indices.reserve(3*mesh->mNumFaces);
 	for (unsigned int i=0; i<mesh->mNumFaces; i++){
@@ -202,9 +209,10 @@ void generateModelVAO(string path, ObjectData &object)
 {
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
 
     int i = 0;
-    if(loadAssImp(path.c_str(), indices, vertices)) {
+    if(loadAssImp(path.c_str(), indices, vertices, normals)) {
         GLfloat ModelVertexArray[vertices.size()*3];
         GLfloat ModelColorArray[vertices.size()*3];
         unsigned int indexList[indices.size()];

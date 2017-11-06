@@ -10,9 +10,15 @@ add_executable(3dviewer 3dviewer.cpp shader.cpp "src/utilities.cpp" "src/mesh.cp
 # add_executable(3dviewer 3dviewer.cpp shader.cpp "src/scene.cpp" )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ColorFragmentShader.fragmentshader
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
- file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/TransformVertexShader.vertexshader
-      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/TransformVertexShader.vertexshader
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/swing_frame.obj
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/swing_seat.obj
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/1simple_round.obj
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 
 find_package(OpenGL REQUIRED)

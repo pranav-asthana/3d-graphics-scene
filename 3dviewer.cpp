@@ -367,7 +367,7 @@ int main()
         // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
         drawGenericObject(carousel.ModelArrayID, matrixID, modelID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, matrixID, modelID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(swingChair.ModelArrayID, matrixID, modelID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1), (float)glfwGetTime()*180.0f, glm::vec3(10,5,1));
+        drawGenericObject(swingChair.ModelArrayID, matrixID, modelID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
         // drawGenericObject(GLuint &VAO, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, optional glm::vec3 translationVector, optional glm::vec3 scaleVector, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {

@@ -12,13 +12,12 @@ uniform vec3 lightPos;
 
 void main(){
 	vec3 lightColor = vec3(0.9,0.55,0.8);
-	vec3 lightPos = vec3(1.2f, 2.0f, 2.0f);
+	vec3 lightPos = vec3(5.0f, 2.0f, 3.0f);
 	vec3 ambient = lightColor*0.7;
 	vec3 norm = normalize(normal);
 	vec3 lightDir = normalize(lightPos - fragmentPos);
 	float diff = max(dot(norm, lightDir), 0.0);
 	vec3 diffuse = diff * lightColor;
-	vec3 result = (ambient + diffuse) * color;
-	//color = result;
-	color = fragmentColor*ambient;
+	vec3 result = (ambient + diffuse) * fragmentColor;
+	color = result;
 }

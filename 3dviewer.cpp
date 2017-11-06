@@ -46,7 +46,7 @@ float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 struct ObjectData {
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, ModelNormalVBO, EBO, indexSize;
 };
 
 void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID,
@@ -216,12 +216,20 @@ void generateModelVAO(string path, ObjectData &object)
     if(loadAssImp(path.c_str(), indices, vertices, normals)) {
         GLfloat ModelVertexArray[vertices.size()*3];
         GLfloat ModelColorArray[vertices.size()*3];
+        GLfloat ModelNormalArray[normals.size()*3];
         unsigned int indexList[indices.size()];
 
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
             ModelVertexArray[i++] = it->z;
+        }
+        i = 0;
+        for (auto it = normals.begin(); it != normals.end(); it++) {
+            ModelNormalArray[i++] = it->x;
+            ModelNormalArray[i++] = it->y;
+            ModelNormalArray[i++] = it->z;
+            cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
         }
 
         for (int j = 0; j < indices.size(); j++) {
@@ -244,22 +252,28 @@ void generateModelVAO(string path, ObjectData &object)
         }
 
         object.indexSize = indices.size();
-        int size = i*sizeof(GLfloat);
 
         glGenVertexArrays(1, &(object.ModelArrayID));
         glBindVertexArray(object.ModelArrayID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
 
         glGenBuffers(1, &(object.ModelVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, size, ModelVertexArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelColorVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, size, ModelColorArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glGenBuffers(1, &(object.ModelNormalVBO));
+        glBindBuffer(GL_ARRAY_BUFFER, object.ModelNormalVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelNormalArray), ModelNormalArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.EBO));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.EBO);

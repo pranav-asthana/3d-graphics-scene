@@ -73,12 +73,10 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
     model = glm::scale(model, scaleVector);
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
-    // glm::vec3 cameraPos = camera.getCameraPosition();
-    glm::vec3 cameraPos = glm::vec3(0, 10, 0);
-    // cout << cameraPos.x << ' ' << cameraPos.y << ' ' << cameraPos.z << '\n';
+    glm::vec3 lightPos = glm::vec3(0, 10, 0);
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
-    glUniform3fv(cameraID, 1, &cameraPos[0]);
+    glUniform3fv(cameraID, 1, &lightPos[0]);
     if (elemental) {
         glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
     } else {
@@ -176,10 +174,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     glBindVertexArray(0);
 
     objectVector.push_back(object);
-    // int len = v.size();
 }
-
-// Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 void setCallBacks(GLFWwindow* window)
 {
@@ -240,23 +235,26 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
 
         glGenBuffers(1, &(object.ModelVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat), ModelVertexArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat),
+                    ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelColorVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat), ModelColorArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat),
+                    ModelColorArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelNormalVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelNormalVBO);
-        glBufferData(GL_ARRAY_BUFFER, normals.size()*3*sizeof(GLfloat), ModelNormalArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, normals.size()*3*sizeof(GLfloat),
+                    ModelNormalArray, GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.EBO));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indexList),
-                     indexList, GL_STATIC_DRAW);
+                    indexList, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
     }
@@ -324,7 +322,6 @@ int main()
         setupMeshVAO(mesh_group.at(i), &color_vector_group.at(i)[0], sceneMesh);
     }
 
-
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -352,7 +349,6 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    //write delete code
 	glDeleteProgram(programID);
 
 	glfwTerminate();

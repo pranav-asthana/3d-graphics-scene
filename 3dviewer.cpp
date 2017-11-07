@@ -51,7 +51,7 @@ struct ObjectData {
 
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
 // int i = 0;
-void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID, GLuint cameraID,
+void drawGenericObject(GLuint &VAO, GLuint programID,
                         glm::mat4 proj,
                         glm::mat4 view,
                         int size,
@@ -61,6 +61,10 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID, GLuint came
                         GLfloat rotationAngle = 0,
                         glm::vec3 rotationAxis = glm::vec3(1,0,0))
 {
+    GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
+    GLuint modelID = glGetUniformLocation(programID, "model");
+    GLuint cameraID = glGetUniformLocation(programID, "_cameraPos");
+
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, translationVector);
@@ -68,7 +72,7 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID, GLuint came
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
     // glm::vec3 cameraPos = camera.getCameraPosition();
-    glm::vec3 cameraPos = glm::vec3(3, 4, 4);
+    glm::vec3 cameraPos = glm::vec3(0, 10, 0);
     cout << cameraPos.x << ' ' << cameraPos.y << ' ' << cameraPos.z << '\n';
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
@@ -263,7 +267,7 @@ void generateModelVAO(string path, ObjectData &object)
         cout << path << i;
         for (int j = 0; j < i; j+=9) {
             ModelColorArray[j] = 1.0;
-            ModelColorArray[j+1] = 1.0;
+            ModelColorArray[j+1] = 0.0;
             ModelColorArray[j+2] = 0.0;
 
             ModelColorArray[j+3] = 1.0;
@@ -345,9 +349,7 @@ int main()
 	glDepthFunc(GL_LESS);
 
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
-    GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
-    GLuint modelID = glGetUniformLocation(programID, "model");
-    GLuint cameraID = glGetUniformLocation(programID, "_cameraPos");
+
     GLuint VertexArrayID[2];
     vector<VertexColorPair> VBOArray;
     setupVAO(VertexArrayID, VBOArray);
@@ -384,26 +386,19 @@ int main()
         view = camera.getCameraView();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	glUseProgram(programID);
-        // int num = 100;
-        // for (int i = 0; i < num; i++) {
-        //     drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
-        // }
-        // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(carousel.ModelArrayID, matrixID, modelID, cameraID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
-        drawGenericObject(swing.ModelArrayID, matrixID, modelID, cameraID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(swingChair.ModelArrayID, matrixID, modelID, cameraID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
-        // drawGenericObject(GLuint &VAO, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, optional glm::vec3 translationVector, optional glm::vec3 scaleVector, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
+
+        drawGenericObject(carousel.ModelArrayID, programID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(swing.ModelArrayID, programID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(swingChair.ModelArrayID, programID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
-            drawGenericObject(it->ModelArrayID, matrixID, modelID, cameraID, proj, view, it->indexSize, false);
+            drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     //write delete code
 	glDeleteProgram(programID);
-	glDeleteVertexArrays(2, VertexArrayID);
-    glDeleteVertexArrays(1, &ModelArrayID);
 
 	glfwTerminate();
     return 0;

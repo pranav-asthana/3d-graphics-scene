@@ -242,13 +242,13 @@ void generateModelVAO(string path, ObjectData &object)
             ModelColorArray[j+1] = 1.0;
             ModelColorArray[j+2] = 0.0;
 
-            ModelColorArray[j+3] = 0.7;
-            ModelColorArray[j+4] = 0.7;
-            ModelColorArray[j+5] = 0.2;
+            ModelColorArray[j+3] = 1.0;
+            ModelColorArray[j+4] = 1.0;
+            ModelColorArray[j+5] = 0.0;
 
-            ModelColorArray[j+6] = 0.7;
-            ModelColorArray[j+7] = 0.7;
-            ModelColorArray[j+8] = 0.2;
+            ModelColorArray[j+6] = 1.0;
+            ModelColorArray[j+7] = 1.0;
+            ModelColorArray[j+8] = 0.0;
         }
 
         object.indexSize = indices.size();

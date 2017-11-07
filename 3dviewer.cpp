@@ -73,7 +73,7 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
     glm::mat4 MVP = proj*view*model;
     // glm::vec3 cameraPos = camera.getCameraPosition();
     glm::vec3 cameraPos = glm::vec3(0, 10, 0);
-    cout << cameraPos.x << ' ' << cameraPos.y << ' ' << cameraPos.z << '\n';
+    // cout << cameraPos.x << ' ' << cameraPos.y << ' ' << cameraPos.z << '\n';
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
     glUniform3fv(cameraID, 1, &cameraPos[0]);
@@ -241,9 +241,14 @@ void generateModelVAO(string path, ObjectData &object)
     std::vector<glm::vec3> normals;
 
     if(loadAssImp(path.c_str(), indices, vertices, normals)) {
-        GLfloat ModelVertexArray[vertices.size()*3];
-        GLfloat ModelColorArray[vertices.size()*3];
-        GLfloat ModelNormalArray[normals.size()*3];
+        GLfloat* ModelVertexArray = new GLfloat[vertices.size()*3];
+        GLfloat* ModelColorArray = new GLfloat[vertices.size()*3];
+        GLfloat* ModelNormalArray = new GLfloat[normals.size()*3];
+//        std::cout << "\nMarray size: " << sizeof(MArray);
+        // GLfloat ModelVertexArray[vertices.size()*3];
+        // GLfloat ModelColorArray[vertices.size()*3];
+        // GLfloat ModelNormalArray[normals.size()*3];
+
         unsigned int indexList[indices.size()];
 
         int i = 0;
@@ -290,17 +295,17 @@ void generateModelVAO(string path, ObjectData &object)
 
         glGenBuffers(1, &(object.ModelVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat), ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelColorVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size()*3*sizeof(GLfloat), ModelColorArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelNormalVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelNormalVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelNormalArray), ModelNormalArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, normals.size()*3*sizeof(GLfloat), ModelNormalArray, GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.EBO));
@@ -339,10 +344,12 @@ int main()
     }
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
-    ObjectData swing, carousel, swingChair;
+    ObjectData swing, carousel, swingChair, rollerCoaster;
     generateModelVAO("swing_seat.obj", swingChair);
     generateModelVAO("swing_frame.obj", swing);
     generateModelVAO("1simple_round.obj", carousel);
+    generateModelVAO("temp_mesh.obj", rollerCoaster);
+    // cout << rollerCoaster.index
 
     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -390,6 +397,7 @@ int main()
         drawGenericObject(carousel.ModelArrayID, programID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
+        drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view, rollerCoaster.indexSize, true, glm::vec3(4,3,4), glm::vec3(0.25, 0.25, 0.25));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

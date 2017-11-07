@@ -335,9 +335,9 @@ int main()
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
     ObjectData swing, carousel, swingChair, rollerCoaster;
-    generateModelVAO("swing_seat.obj", swingChair, model_color_array);
-    generateModelVAO("swing_frame.obj", swing, model_color_array);
-    generateModelVAO("1simple_round.obj", carousel, model_color_array);
+    generateModelVAO("swing_seat.obj", swingChair, swing_chair_color);
+    generateModelVAO("swing_frame.obj", swing, swing_frame_color);
+    generateModelVAO("1simple_round.obj", carousel, carousel_color);
     generateModelVAO("temp_mesh.obj", rollerCoaster, model_color_array);
     // cout << rollerCoaster.index
 
@@ -357,7 +357,7 @@ int main()
     Scene scene = Scene();
     scene.addMonkeyBars(glm::vec3(-4, 0, 0), glm::vec3(1.0, 1.0, 0.2), 7, 3);
     scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
-    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.7, 0, 0), 3,
+    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.6, 0.3, 0.1), 3,
                     glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0),
                     glm::vec3(0, 1, 0)));
     scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
@@ -393,7 +393,7 @@ int main()
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
                             swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
         drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view,
-                            rollerCoaster.indexSize, true, glm::vec3(4,3,4), glm::vec3(0.25, 0.25, 0.25));
+                            rollerCoaster.indexSize, true, glm::vec3(4,10,4), glm::vec3(0.25, 0.25, 0.25));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

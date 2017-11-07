@@ -50,7 +50,7 @@ struct ObjectData {
 };
 
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
-
+// int i = 0;
 void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID, GLuint cameraID,
                         glm::mat4 proj,
                         glm::mat4 view,
@@ -67,7 +67,9 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID, GLuint came
     model = glm::scale(model, scaleVector);
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
-    glm::vec3 cameraPos = camera.getCameraPosition();
+    // glm::vec3 cameraPos = camera.getCameraPosition();
+    glm::vec3 cameraPos = glm::vec3(3, 4, 4);
+    cout << cameraPos.x << ' ' << cameraPos.y << ' ' << cameraPos.z << '\n';
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
     glUniform3fv(cameraID, 1, &cameraPos[0]);

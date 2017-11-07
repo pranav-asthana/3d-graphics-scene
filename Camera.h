@@ -80,6 +80,11 @@ public:
         return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
 
+    glm::vec3 getCameraPosition()
+    {
+        return cameraPos;
+    }
+
     float getFOV()
     {
         return fov;

@@ -173,6 +173,18 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     object.indexSize = v.size()/3; //# of vertices = arraysize/3 (x,y,z)
     int size = v.size()*sizeof(GLfloat);
 
+    vector<glm::vec3> normals = mesh.getNormals();
+    GLfloat ModelNormalArray[normals.size()*3];
+
+    int i = 0;
+    for (auto it = normals.begin(); it != normals.end(); it++) {
+        ModelNormalArray[i++] = it->x;
+        ModelNormalArray[i++] = it->y;
+        ModelNormalArray[i++] = it->z;
+        cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
+    }
+
+
     glGenVertexArrays(1, &(object.ModelArrayID));
     glBindVertexArray(object.ModelArrayID);
     glEnableVertexAttribArray(0);
@@ -187,6 +199,12 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
     glBufferData(GL_ARRAY_BUFFER, size, color_vector, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glGenBuffers(1, &(object.ModelNormalVBO));
+    glBindBuffer(GL_ARRAY_BUFFER, object.ModelNormalVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ModelNormalArray), ModelNormalArray, GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
     glBindVertexArray(0);
 
     objectVector.push_back(object);
@@ -212,13 +230,13 @@ void generateModelVAO(string path, ObjectData &object)
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
 
-    int i = 0;
     if(loadAssImp(path.c_str(), indices, vertices, normals)) {
         GLfloat ModelVertexArray[vertices.size()*3];
         GLfloat ModelColorArray[vertices.size()*3];
         GLfloat ModelNormalArray[normals.size()*3];
         unsigned int indexList[indices.size()];
 
+        int i = 0;
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;

@@ -244,10 +244,6 @@ void generateModelVAO(string path, ObjectData &object)
         GLfloat* ModelVertexArray = new GLfloat[vertices.size()*3];
         GLfloat* ModelColorArray = new GLfloat[vertices.size()*3];
         GLfloat* ModelNormalArray = new GLfloat[normals.size()*3];
-//        std::cout << "\nMarray size: " << sizeof(MArray);
-        // GLfloat ModelVertexArray[vertices.size()*3];
-        // GLfloat ModelColorArray[vertices.size()*3];
-        // GLfloat ModelNormalArray[normals.size()*3];
 
         unsigned int indexList[indices.size()];
 
@@ -394,10 +390,15 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	glUseProgram(programID);
 
-        drawGenericObject(carousel.ModelArrayID, programID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
-        drawGenericObject(swing.ModelArrayID, programID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(swingChair.ModelArrayID, programID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
-        drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view, rollerCoaster.indexSize, true, glm::vec3(4,3,4), glm::vec3(0.25, 0.25, 0.25));
+        drawGenericObject(carousel.ModelArrayID, programID, proj, view,
+                            carousel.indexSize, true, glm::vec3(0,0.2,0),
+                            glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(swing.ModelArrayID, programID, proj, view,
+                            swing.indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
+                            swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
+        drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view,
+                            rollerCoaster.indexSize, true, glm::vec3(4,3,4), glm::vec3(0.25, 0.25, 0.25));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

@@ -13,6 +13,7 @@
 #include "monkeybars.h"
 #include "seesaw.h"
 #include "slide.h"
+#include "grass.h"
 
 class Scene
 {
@@ -31,6 +32,7 @@ public:
 
     void addFence(glm::vec4 bounds);
     void addFloor(glm::vec4 bounds);
+    void addGrass(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec);
 private:
     vector<Mesh> meshes;
     vector<vector<GLfloat>> colors;

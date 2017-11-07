@@ -3,9 +3,9 @@
 
 #define PI 3.1415
 
-Cylinder::Cylinder(float height, float radius, glm::vec3 orientation)
+Cylinder::Cylinder(float height, float radius, glm::vec3 orientation, int num_segments)
 {
-    mesh = createMesh(height, radius, orientation);
+    mesh = createMesh(height, radius, orientation, num_segments);
 }
 
 Mesh Cylinder::getMesh()
@@ -13,11 +13,11 @@ Mesh Cylinder::getMesh()
     return mesh;
 }
 
-Mesh Cylinder::createMesh(float height, float radius, glm::vec3 orientation)
+Mesh Cylinder::createMesh(float height, float radius, glm::vec3 orientation, int num_segments)
 {
     Mesh mesh = Mesh();
 
-    int num_segments = 36;
+    // int num_segments = 36;
 
     glm::vec3 vertices[num_segments*2];
 

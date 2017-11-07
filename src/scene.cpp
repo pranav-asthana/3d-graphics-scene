@@ -20,7 +20,7 @@ void Scene::addCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec)
     Mesh mesh = cube.getMesh();
     int len = (mesh.getVertices()).size();
 
-    vector<GLfloat> color_vector = getColorVector(color_vec, len);
+    vector<GLfloat> color_vector = getColorVector(color_vec, len*2);
 
     glm::mat4 T;
     T = glm::translate(T, center);
@@ -131,5 +131,19 @@ void Scene::addFloor(glm::vec4 bounds) //x-z bounds
 
     for (float i = bounds.z; i <= bounds.w; i+=1)
         addCylinder(glm::vec3(bounds.x+bounds.y, 0, i), (float) bounds.x-bounds.y, (float) 0.005, glm::vec3(0.7, 0.7, 0.7), glm::vec3(1, 0, 0));
-    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x, 0.1, bounds.w-bounds.z), glm::vec3(0.25, 0.5, 0));
+    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x, 0.1, bounds.w-bounds.z), glm::vec3(0.25, 0.5, 0.0));
+}
+
+void Scene::addGrass(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec)
+{
+    Grass grass = Grass(left_bottom, top_right);
+    Mesh mesh = grass.getMesh();
+
+    int len = (mesh.getVertices()).size();
+    vector<GLfloat> color_vector = getColorVector(color_vec, len);
+
+    // mesh.transform(transformation);
+
+    meshes.push_back(mesh);
+    colors.push_back(color_vector);
 }

@@ -9,11 +9,11 @@
 class Cylinder
 {
 public:
-    Cylinder(float height, float radius, glm::vec3 orientation);
+    Cylinder(float height, float radius, glm::vec3 orientation, int num_segments=36);
 
     Mesh getMesh();
 private:
     Mesh mesh;
-    Mesh createMesh(float height, float radius, glm::vec3 orientation);
+    Mesh createMesh(float height, float radius, glm::vec3 orientation, int num_segments);
 };
 #endif

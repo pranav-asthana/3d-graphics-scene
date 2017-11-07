@@ -236,7 +236,7 @@ void setCallBacks(GLFWwindow* window)
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
-void generateModelVAO(string path, ObjectData &object)
+void generateModelVAO(string path, ObjectData &object, const GLfloat* color_array)
 {
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
@@ -268,18 +268,10 @@ void generateModelVAO(string path, ObjectData &object)
             indexList[j] = indices[j];
         }
 
-        for (ulong64_t j = 0; j < i; j+=9) {
-            ModelColorArray[j] = 1.0;
-            ModelColorArray[j+1] = 0.0;
-            ModelColorArray[j+2] = 0.0;
-
-            ModelColorArray[j+3] = 1.0;
-            ModelColorArray[j+4] = 1.0;
-            ModelColorArray[j+5] = 0.0;
-
-            ModelColorArray[j+6] = 1.0;
-            ModelColorArray[j+7] = 1.0;
-            ModelColorArray[j+8] = 0.0;
+        for (ulong64_t j = 0; j < i;) {
+            for (int ctr = 0; ctr < 9; ctr++) {
+                ModelColorArray[j++] = color_array[ctr];
+            }
         }
 
         object.indexSize = indices.size();
@@ -343,10 +335,10 @@ int main()
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
     ObjectData swing, carousel, swingChair, rollerCoaster;
-    generateModelVAO("swing_seat.obj", swingChair);
-    generateModelVAO("swing_frame.obj", swing);
-    generateModelVAO("1simple_round.obj", carousel);
-    generateModelVAO("temp_mesh.obj", rollerCoaster);
+    generateModelVAO("swing_seat.obj", swingChair, model_color_array);
+    generateModelVAO("swing_frame.obj", swing, model_color_array);
+    generateModelVAO("1simple_round.obj", carousel, model_color_array);
+    generateModelVAO("temp_mesh.obj", rollerCoaster, model_color_array);
     // cout << rollerCoaster.index
 
     glClearColor(1.0f, 0.6f, 0.35f, 0.0f);

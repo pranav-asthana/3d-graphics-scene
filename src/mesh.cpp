@@ -51,26 +51,38 @@ vector<glm::vec3> Mesh::getNormals()
 
 void Mesh::transform(glm::mat4 transformation)
 {
-    vector<GLfloat> vertices = this->vertices;
+    // vector<GLfloat> vertices = this->vertices;
     vector<Triangle> triangles = this->triangles;
     Mesh mesh = Mesh();
-    Mesh mesh2 = Mesh();
-    vector<glm::vec3> v;
-    for (int i = 0, j = 1; i < vertices.size(); i+=3)
+    for (int i=0; i < triangles.size(); i++)
     {
-        glm::vec4 vertex = glm::vec4(vertices[i+0], vertices[i+1], vertices[i+2], 1.0f);
-        vertex = transformation * vertex;
-        mesh.addVertex(glm::vec3(vertex));
-        v.push_back(glm::vec3(vertex));
-        if (j++%3 == 0){
-            mesh2.addTriangle(v.at(2), v.at(1), v.at(0));
-            v.pop_back();
-            v.pop_back();
-            v.pop_back();
-        }
+        Triangle T = triangles.at(i);
+        glm::vec4 A1 = transformation * glm::vec4(T.A, 1);
+        glm::vec4 B1 = transformation * glm::vec4(T.B, 1);
+        glm::vec4 C1 = transformation * glm::vec4(T.C, 1);
+        mesh.addTriangle(glm::vec3(A1), glm::vec3(B1), glm::vec3(C1));
     }
-    this->triangles = mesh2.getTriangles();
     this->vertices = mesh.getVertices();
+    this->triangles = mesh.getTriangles();
+    this->normals = mesh.getNormals();
+    // Mesh mesh = Mesh();
+    // Mesh mesh2 = Mesh();
+    // vector<glm::vec3> v;
+    // for (int i = 0, j = 1; i < vertices.size(); i+=3)
+    // {
+    //     glm::vec4 vertex = glm::vec4(vertices[i+0], vertices[i+1], vertices[i+2], 1.0f);
+    //     vertex = transformation * vertex;
+    //     mesh.addVertex(glm::vec3(vertex));
+    //     v.push_back(glm::vec3(vertex));
+    //     if (j++%3 == 0){
+    //         mesh2.addTriangle(v.at(2), v.at(1), v.at(0));
+    //         v.pop_back();
+    //         v.pop_back();
+    //         v.pop_back();
+    //     }
+    // }
+    // this->triangles = mesh2.getTriangles();
+    // this->vertices = mesh.getVertices();
 }
 
 void Mesh::joinMesh(Mesh mesh)

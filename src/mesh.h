@@ -13,11 +13,13 @@ class Mesh
 private:
     vector<GLfloat> vertices;
     vector<Triangle> triangles;
+    vector<glm::vec3> normals;
 
     void addVertex(glm::vec3 vertex);
 
 public:
     Mesh();
+
 
     void addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
 
@@ -26,6 +28,8 @@ public:
     vector<GLfloat> getVertices();
 
     vector<Triangle> getTriangles();
+
+    vector<glm::vec3> getNormals();
 
     void transform(glm::mat4 transformation);
 

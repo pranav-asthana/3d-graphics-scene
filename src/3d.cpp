@@ -12,10 +12,6 @@
 #include <unistd.h>
 #include <math.h>
 #include "scene.h"
-#include "sphere.h"
-#include "cube.h"
-#include "cylinder.h"
-#include "monkeybars.h"
 
 #define PI 3.14159265
 #define SCREEN_WIDTH 1280

@@ -185,7 +185,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
         ModelNormalArray[i++] = it->x;
         ModelNormalArray[i++] = it->y;
         ModelNormalArray[i++] = it->z;
-        cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
+        // cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
     }
 
 
@@ -251,7 +251,7 @@ void generateModelVAO(string path, ObjectData &object)
             ModelNormalArray[i++] = it->x;
             ModelNormalArray[i++] = it->y;
             ModelNormalArray[i++] = it->z;
-            cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
+            // cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
         }
 
         for (int j = 0; j < indices.size(); j++) {

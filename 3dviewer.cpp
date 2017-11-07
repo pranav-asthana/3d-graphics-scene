@@ -20,9 +20,9 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 15.0f
+#define SQUARE_SIDE 100.0f
 #define MIN_ALT 0.5f
-#define MAX_ALT 10.0f
+#define MAX_ALT 100.0f
 
 using namespace glm;
 using namespace std;

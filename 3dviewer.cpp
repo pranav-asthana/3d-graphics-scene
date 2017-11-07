@@ -189,6 +189,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     glBindVertexArray(object.ModelArrayID);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
     glGenBuffers(1, &(object.ModelVBO));
     glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);

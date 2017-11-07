@@ -122,51 +122,6 @@ bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
 	return true;
 }
 
-void setupVAO(GLuint* VertexArrayID, vector<VertexColorPair> &VBOArray)
-{
-    glGenVertexArrays(2, VertexArrayID);
-
-    glBindVertexArray(VertexArrayID[0]);
-
-    //cube
-    VertexColorPair cube;
-    // GLuint vertexbuffer, colorbuffer;
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glGenBuffers(1, &cube.first);
-    glBindBuffer(GL_ARRAY_BUFFER, cube.first);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glGenBuffers(1, &cube.second);
-    glBindBuffer(GL_ARRAY_BUFFER, cube.second);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    VBOArray.push_back(cube);
-    glBindVertexArray(0);
-
-    glBindVertexArray(VertexArrayID[1]);
-    //plane
-    // GLuint floorvertexbuffer, floorcolorbuffer;
-    VertexColorPair plane;
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glGenBuffers(1, &plane.first);
-    glBindBuffer(GL_ARRAY_BUFFER, plane.first);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_data), floor_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
-
-    glGenBuffers(1, &plane.second);
-    glBindBuffer(GL_ARRAY_BUFFER, plane.second);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floor_color_data), floor_color_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,(void*)0);
-    glBindVertexArray(0);
-    VBOArray.push_back(plane);
-}
-
 bool initOpenGL()
 {
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -346,10 +301,6 @@ int main()
 	glDepthFunc(GL_LESS);
 
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
-
-    GLuint VertexArrayID[2];
-    vector<VertexColorPair> VBOArray;
-    setupVAO(VertexArrayID, VBOArray);
 
     glm::mat4 proj;
     glm::mat4 view;

@@ -46,10 +46,10 @@ float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 struct ObjectData {
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
+    GLuint ModelArrayID, ModelVBO, ModelColorVBO, ModelNormalVBO, EBO, indexSize;
 };
 
-void drawGenericObject(GLuint &VAO, GLuint matrixID,
+void drawGenericObject(GLuint &VAO, GLuint matrixID, GLuint modelID,
                         glm::mat4 proj,
                         glm::mat4 view,
                         int size,
@@ -66,6 +66,7 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID,
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
     if (elemental) {
         glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
     } else {
@@ -74,7 +75,9 @@ void drawGenericObject(GLuint &VAO, GLuint matrixID,
     glBindVertexArray(0);
 }
 
-bool loadAssImp(const char * path, std::vector<unsigned short> & indices, std::vector<glm::vec3> & vertices) {
+bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
+                std::vector<glm::vec3> &vertices,
+                std::vector<glm::vec3> &normals) {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, 0);
 	if( !scene) {
@@ -90,6 +93,11 @@ bool loadAssImp(const char * path, std::vector<unsigned short> & indices, std::v
 		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
 	}
 
+    normals.reserve(mesh->mNumVertices);
+	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+		aiVector3D n = mesh->mNormals[i];
+		normals.push_back(glm::vec3(n.x, n.y, n.z));
+    }
 	// Fill face indices
 	indices.reserve(3*mesh->mNumFaces);
 	for (unsigned int i=0; i<mesh->mNumFaces; i++){
@@ -202,17 +210,26 @@ void generateModelVAO(string path, ObjectData &object)
 {
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
 
     int i = 0;
-    if(loadAssImp(path.c_str(), indices, vertices)) {
+    if(loadAssImp(path.c_str(), indices, vertices, normals)) {
         GLfloat ModelVertexArray[vertices.size()*3];
         GLfloat ModelColorArray[vertices.size()*3];
+        GLfloat ModelNormalArray[normals.size()*3];
         unsigned int indexList[indices.size()];
 
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
             ModelVertexArray[i++] = it->z;
+        }
+        i = 0;
+        for (auto it = normals.begin(); it != normals.end(); it++) {
+            ModelNormalArray[i++] = it->x;
+            ModelNormalArray[i++] = it->y;
+            ModelNormalArray[i++] = it->z;
+            cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
         }
 
         for (int j = 0; j < indices.size(); j++) {
@@ -225,32 +242,38 @@ void generateModelVAO(string path, ObjectData &object)
             ModelColorArray[j+1] = 1.0;
             ModelColorArray[j+2] = 0.0;
 
-            ModelColorArray[j+3] = 0.7;
-            ModelColorArray[j+4] = 0.7;
-            ModelColorArray[j+5] = 0.2;
+            ModelColorArray[j+3] = 1.0;
+            ModelColorArray[j+4] = 1.0;
+            ModelColorArray[j+5] = 0.0;
 
-            ModelColorArray[j+6] = 0.7;
-            ModelColorArray[j+7] = 0.7;
-            ModelColorArray[j+8] = 0.2;
+            ModelColorArray[j+6] = 1.0;
+            ModelColorArray[j+7] = 1.0;
+            ModelColorArray[j+8] = 0.0;
         }
 
         object.indexSize = indices.size();
-        int size = i*sizeof(GLfloat);
 
         glGenVertexArrays(1, &(object.ModelArrayID));
         glBindVertexArray(object.ModelArrayID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
 
         glGenBuffers(1, &(object.ModelVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
-        glBufferData(GL_ARRAY_BUFFER, size, ModelVertexArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelVertexArray), ModelVertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.ModelColorVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelColorVBO);
-        glBufferData(GL_ARRAY_BUFFER, size, ModelColorArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelColorArray), ModelColorArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glGenBuffers(1, &(object.ModelNormalVBO));
+        glBindBuffer(GL_ARRAY_BUFFER, object.ModelNormalVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(ModelNormalArray), ModelNormalArray, GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
         glGenBuffers(1, &(object.EBO));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.EBO);
@@ -299,6 +322,7 @@ int main()
 
     GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
     GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
+    GLuint modelID = glGetUniformLocation(programID, "model");
 
     GLuint VertexArrayID[2];
     vector<VertexColorPair> VBOArray;
@@ -341,13 +365,13 @@ int main()
         //     drawGenericObject(VertexArrayID[0], matrixID, proj, view, 12, false, glm::vec3(i,i,i), glm::vec3(0.25,0.25,0.25), 45.0f, glm::vec3(1,0,0));
         // }
         // drawGenericObject(VertexArrayID[1], matrixID, proj, view, 2, false, glm::vec3(0,0,0), glm::vec3(100,1,100));//, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
-        drawGenericObject(carousel.ModelArrayID, matrixID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
-        drawGenericObject(swing.ModelArrayID, matrixID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
-        drawGenericObject(swingChair.ModelArrayID, matrixID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1), (float)glfwGetTime()*180.0f, glm::vec3(10,5,1));
+        drawGenericObject(carousel.ModelArrayID, matrixID, modelID, proj, view, carousel.indexSize, true, glm::vec3(0,0.2,0), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+        drawGenericObject(swing.ModelArrayID, matrixID, modelID, proj, view, swing.indexSize, true, glm::vec3(5,0,3));
+        drawGenericObject(swingChair.ModelArrayID, matrixID, modelID, proj, view, swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
         // drawGenericObject(GLuint &VAO, GLuint matrixID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, optional glm::vec3 translationVector, optional glm::vec3 scaleVector, optional GLfloat rotationAngle, optional glm::vec3 rotationAxis)
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
-            drawGenericObject(it->ModelArrayID, matrixID, proj, view, it->indexSize, false);
+            drawGenericObject(it->ModelArrayID, matrixID, modelID, proj, view, it->indexSize, false);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();

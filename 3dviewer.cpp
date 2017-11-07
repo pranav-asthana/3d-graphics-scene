@@ -20,9 +20,11 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 100.0f
+#define SQUARE_SIDE 34.0f
 #define MIN_ALT 0.5f
 #define MAX_ALT 100.0f
+
+typedef unsigned long long ulong64_t;
 
 using namespace glm;
 using namespace std;
@@ -98,19 +100,19 @@ bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
 	const aiMesh* mesh = scene->mMeshes[0];
 	// Fill vertices positions
 	vertices.reserve(mesh->mNumVertices);
-	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+	for(ulong64_t i=0; i<mesh->mNumVertices; i++){
 		aiVector3D pos = mesh->mVertices[i];
 		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
 	}
 
     normals.reserve(mesh->mNumVertices);
-	for(unsigned int i=0; i<mesh->mNumVertices; i++){
+	for(ulong64_t i=0; i<mesh->mNumVertices; i++){
 		aiVector3D n = mesh->mNormals[i];
 		normals.push_back(glm::vec3(n.x, n.y, n.z));
     }
 	// Fill face indices
 	indices.reserve(3*mesh->mNumFaces);
-	for (unsigned int i=0; i<mesh->mNumFaces; i++){
+	for (ulong64_t i=0; i<mesh->mNumFaces; i++){
 		// Assume the model has only triangles.
 		indices.push_back(mesh->mFaces[i].mIndices[0]);
 		indices.push_back(mesh->mFaces[i].mIndices[1]);
@@ -186,7 +188,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     vector<glm::vec3> normals = mesh.getNormals();
     GLfloat ModelNormalArray[normals.size()*3];
 
-    int i = 0;
+    ulong64_t i = 0;
     for (auto it = normals.begin(); it != normals.end(); it++) {
         ModelNormalArray[i++] = it->x;
         ModelNormalArray[i++] = it->y;
@@ -247,12 +249,13 @@ void generateModelVAO(string path, ObjectData &object)
 
         unsigned int indexList[indices.size()];
 
-        int i = 0;
+        ulong64_t i = 0;
         for (auto it = vertices.begin(); it != vertices.end(); it++) {
             ModelVertexArray[i++] = it->x;
             ModelVertexArray[i++] = it->y;
             ModelVertexArray[i++] = it->z;
         }
+        cout << path << i;
         i = 0;
         for (auto it = normals.begin(); it != normals.end(); it++) {
             ModelNormalArray[i++] = it->x;
@@ -261,12 +264,11 @@ void generateModelVAO(string path, ObjectData &object)
             // cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
         }
 
-        for (int j = 0; j < indices.size(); j++) {
+        for (ulong64_t j = 0; j < indices.size(); j++) {
             indexList[j] = indices[j];
         }
 
-        cout << path << i;
-        for (int j = 0; j < i; j+=9) {
+        for (ulong64_t j = 0; j < i; j+=9) {
             ModelColorArray[j] = 1.0;
             ModelColorArray[j+1] = 0.0;
             ModelColorArray[j+2] = 0.0;
@@ -347,7 +349,7 @@ int main()
     generateModelVAO("temp_mesh.obj", rollerCoaster);
     // cout << rollerCoaster.index
 
-    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+    glClearColor(1.0f, 0.6f, 0.35f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -359,15 +361,16 @@ int main()
 
     glm::mat4 proj;
     glm::mat4 view;
-
+    const int offset = 7.5;
     Scene scene = Scene();
-    scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
+    scene.addMonkeyBars(glm::vec3(-4, 0, 0), glm::vec3(1.0, 1.0, 0.2), 7, 3);
     scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
     scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.7, 0, 0), 3,
                     glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0),
                     glm::vec3(0, 1, 0)));
-    scene.addFence(glm::vec4(x_min, x_max, z_min, z_max));
+    scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
+    // scene.addCube(glm::vec3(0,0,0), glm::vec3(110, 50, 110), glm::vec3(0.6, 0.5, 0.2));
 
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();

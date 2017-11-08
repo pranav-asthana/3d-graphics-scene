@@ -187,14 +187,18 @@ int main()
     scene.addFence(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
     scene.addFloor(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
 
-    for (int tiles = 0; tiles < 10; tiles++)
-    {
-        scene.addCube(glm::vec3(0.55, 0, tiles+0.5), glm::vec3(0.9, 0.1, 0.95), glm::vec3(0.2, 0.2, 0.2));
-        scene.addGrass(glm::vec2(0, tiles), glm::vec2(0.1, tiles+1), glm::vec3(0, 1, 0)); // LEFT
-        scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // RIGHT
-        scene.addGrass(glm::vec2(0, tiles-0.05), glm::vec2(1, tiles), glm::vec3(0, 1, 0)); // TOP
-        // scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // BOTTOM
-    }
+    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
+    scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
+
+
+    // for (int tiles = 0; tiles < 10; tiles++)
+    // {
+    //     scene.addCube(glm::vec3(0.55, 0, tiles+0.5), glm::vec3(0.9, 0.1, 0.95), glm::vec3(0.2, 0.2, 0.2));
+    //     scene.addGrass(glm::vec2(0, tiles), glm::vec2(0.1, tiles+1), glm::vec3(0, 1, 0)); // LEFT
+    //     scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // RIGHT
+    //     scene.addGrass(glm::vec2(0, tiles-0.05), glm::vec2(1, tiles), glm::vec3(0, 1, 0)); // TOP
+    //     // scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // BOTTOM
+    // }
 
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();

@@ -147,3 +147,18 @@ void Scene::addGrass(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color
     meshes.push_back(mesh);
     colors.push_back(color_vector);
 }
+
+void Scene::addPath(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec)
+{
+    for (int tiles = left_bottom.y; tiles < top_right.y; tiles++)
+    {
+        for (int hor = left_bottom.x; hor < top_right.x; hor++)
+        {
+            addCube(glm::vec3(hor+0.55, 0, tiles+0.5), glm::vec3(0.9, 0.1, 0.95), color_vec);
+            addGrass(glm::vec2(hor+0, tiles), glm::vec2(hor+0.1, tiles+1), glm::vec3(0, 1, 0)); // LEFT
+            addGrass(glm::vec2(hor+1, tiles), glm::vec2(hor+1.1, tiles+1), glm::vec3(0, 1, 0)); // RIGHT
+            addGrass(glm::vec2(hor+0, tiles-0.05), glm::vec2(hor+1, tiles), glm::vec3(0, 1, 0)); // TOP
+            addGrass(glm::vec2(hor+0, tiles+1), glm::vec2(hor+1, tiles+1.05), glm::vec3(0, 1, 0)); // BOTTOM
+        }
+    }
+}

@@ -262,8 +262,7 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
 
 int main()
 {
-    if(!glfwInit())
-    {
+    if(!glfwInit()) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         getchar();
         return false;
@@ -291,7 +290,7 @@ int main()
     generateModelVAO("swing_seat.obj", swingChair, swing_chair_color);
     generateModelVAO("swing_frame.obj", swing, swing_frame_color);
     generateModelVAO("1simple_round.obj", carousel, carousel_color);
-    generateModelVAO("temp_mesh.obj", rollerCoaster, model_color_array);
+    generateModelVAO("coaster_run.obj", rollerCoaster, model_color_array);
     // cout << rollerCoaster.index
 
     glClearColor(1.0f, 0.6f, 0.35f, 0.0f);
@@ -341,7 +340,7 @@ int main()
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
                             swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
         drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view,
-                            rollerCoaster.indexSize, true, glm::vec3(4,10,4), glm::vec3(0.25, 0.25, 0.25));
+                            rollerCoaster.indexSize, true, glm::vec3(4,3,4));//, glm::vec3(0.25, 0.25, 0.25));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

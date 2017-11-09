@@ -310,6 +310,12 @@ int main()
                     glm::vec3(0, 1, 0)));
     scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
+    const int squareSize = 15;
+    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
+    scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
+
+    // scene.addPath(glm::vec2(-squareSize, -squareSize), glm::vec2(squareSize,squareSize), glm::vec3(1,0,0));
+    // scene.addPath(glm::vec2(x_min,z_min), glm::vec2(x_max,z_max), glm::vec3(1,0,0));
     // scene.addCube(glm::vec3(0,0,0), glm::vec3(110, 50, 110), glm::vec3(0.6, 0.5, 0.2));
 
     vector<Mesh> mesh_group = scene.getMesh();
@@ -324,7 +330,7 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        // cout << "FPS: " << 1.0f/deltaTime << endl;
+        cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);

@@ -44,7 +44,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-float deltaTime = 0.0f;	// time between current frame and last frame
+float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 struct ObjectData {
@@ -52,7 +52,7 @@ struct ObjectData {
 };
 
 Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
-// int i = 0;
+
 void drawGenericObject(GLuint &VAO, GLuint programID,
                         glm::mat4 proj,
                         glm::mat4 view,
@@ -63,9 +63,9 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
                         GLfloat rotationAngle = 0,
                         glm::vec3 rotationAxis = glm::vec3(1,0,0))
 {
-    GLuint matrixID = glGetUniformLocation(programID, "MVP"); //finds mvp and stores it here
+    GLuint matrixID = glGetUniformLocation(programID, "MVP");
     GLuint modelID = glGetUniformLocation(programID, "model");
-    GLuint cameraID = glGetUniformLocation(programID, "_cameraPos");
+    GLuint lightID = glGetUniformLocation(programID, "LightPos");
 
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.0f);
@@ -73,10 +73,9 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
     model = glm::scale(model, scaleVector);
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
-    glm::vec3 lightPos = glm::vec3(0, 10, 0);
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
-    glUniform3fv(cameraID, 1, &lightPos[0]);
+    glUniform3fv(lightID, 1, &lightPos[0]);
     if (elemental) {
         glDrawElements(GL_TRIANGLES, size, GL_UNSIGNED_INT, 0);
     } else {
@@ -88,36 +87,26 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
 bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
                 std::vector<glm::vec3> &vertices,
                 std::vector<glm::vec3> &normals) {
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, 0);
-	if( !scene) {
-		fprintf( stderr, importer.GetErrorString());
-		getchar();
-		return false;
-	}
-	const aiMesh* mesh = scene->mMeshes[0];
-	// Fill vertices positions
-	vertices.reserve(mesh->mNumVertices);
-	for(ulong64_t i=0; i<mesh->mNumVertices; i++){
-		aiVector3D pos = mesh->mVertices[i];
-		vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
-	}
-
-    normals.reserve(mesh->mNumVertices);
-	for(ulong64_t i=0; i<mesh->mNumVertices; i++){
-		aiVector3D n = mesh->mNormals[i];
-		normals.push_back(glm::vec3(n.x, n.y, n.z));
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, 0);
+    const aiMesh* mesh = scene->mMeshes[0];
+    vertices.reserve(mesh->mNumVertices);
+    for(ulong64_t i = 0; i < mesh->mNumVertices; i++){
+        aiVector3D pos = mesh->mVertices[i];
+        vertices.push_back(glm::vec3(pos.x, pos.y, pos.z));
     }
-	// Fill face indices
-	indices.reserve(3*mesh->mNumFaces);
-	for (ulong64_t i=0; i<mesh->mNumFaces; i++){
-		// Assume the model has only triangles.
-		indices.push_back(mesh->mFaces[i].mIndices[0]);
-		indices.push_back(mesh->mFaces[i].mIndices[1]);
-		indices.push_back(mesh->mFaces[i].mIndices[2]);
-	}
-
-	return true;
+    normals.reserve(mesh->mNumVertices);
+    for(ulong64_t i = 0; i < mesh->mNumVertices; i++){
+        aiVector3D n = mesh->mNormals[i];
+        normals.push_back(glm::vec3(n.x, n.y, n.z));
+    }
+    indices.reserve(3*mesh->mNumFaces);
+    for (ulong64_t i=0; i<mesh->mNumFaces; i++){
+        indices.push_back(mesh->mFaces[i].mIndices[0]);
+        indices.push_back(mesh->mFaces[i].mIndices[1]);
+        indices.push_back(mesh->mFaces[i].mIndices[2]);
+    }
+    return true;
 }
 
 bool initOpenGL()
@@ -146,9 +135,7 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
         ModelNormalArray[i++] = it->x;
         ModelNormalArray[i++] = it->y;
         ModelNormalArray[i++] = it->z;
-        // cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
     }
-
 
     glGenVertexArrays(1, &(object.ModelArrayID));
     glBindVertexArray(object.ModelArrayID);
@@ -211,7 +198,6 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
             ModelNormalArray[i++] = it->x;
             ModelNormalArray[i++] = it->y;
             ModelNormalArray[i++] = it->z;
-            // cout << it->x << ' ' << it->y << ' ' << it->z << '\n';
         }
 
         for (ulong64_t j = 0; j < indices.size(); j++) {
@@ -231,7 +217,6 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
-
 
         glGenBuffers(1, &(object.ModelVBO));
         glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
@@ -270,12 +255,12 @@ int main()
     if (!initOpenGL()) {
         return -1;
     }
-	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
-	if( window == NULL ){
-		glfwTerminate();
-		return -1;
-	}
+    // Open a window and create its OpenGL context
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
+    if(window == NULL){
+        glfwTerminate();
+        return -1;
+    }
     setCallBacks(window);
     glewExperimental = true; // Needed for core profile
     if (glewInit() != GLEW_OK) {

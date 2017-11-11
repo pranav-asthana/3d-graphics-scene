@@ -208,6 +208,7 @@ int main()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        cout << "FPS: " << 1.0f/deltaTime << endl;
 
         view = updateView();
 

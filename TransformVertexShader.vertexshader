@@ -7,16 +7,16 @@ layout(location = 2) in vec3 normalVal;
 out vec3 fragmentColor;
 out vec3 normal;
 out vec3 fragmentPos;
-out vec3 cameraPos;
+out vec3 _lightPos;
 
 uniform mat4 MVP;
 uniform mat4 model;
-uniform vec3 _cameraPos;
+uniform vec3 LightPos;
 
 void main(){
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1); //sent to GPU
+	_lightPos = LightPos;
 	normal = mat3(transpose(inverse(model))) * normalVal; //forwarded on to frag shader
-	cameraPos = _cameraPos;
 	fragmentPos = vec3(model * vec4(vertexPosition_modelspace, 1));
 	fragmentColor = vertexColor; //forwarded on to fragshader
 }

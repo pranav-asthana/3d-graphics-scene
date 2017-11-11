@@ -9,8 +9,13 @@
 class SeeSaw
 {
 public:
+    /// Create a SeeSaw object
     SeeSaw();
+
+    /// Return a Mesh object of the SeeSaw
     Mesh getMesh();
+
+    /// Return GLfloat vector of colors of each vertex for the SeeSaw
     vector<GLfloat> getColors();
 
 private:

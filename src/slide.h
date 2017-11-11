@@ -8,7 +8,10 @@
 class Slide
 {
 public:
+    /// Create a slide object of given height
     Slide(int height);
+
+    /// Return a Mesh object of the Slide
     Mesh getMesh();
 
 private:

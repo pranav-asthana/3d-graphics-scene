@@ -18,9 +18,15 @@
 class Scene
 {
 public:
+    /// Initialize a Scene object
     Scene();
+
+    /// Return a Mesh vector of all elements of the scene
     vector<Mesh> getMesh();
+
+    /// Return a vector of the color GLfloat vectors of the elements of the scene
     vector<vector<GLfloat>> getColors();
+
 
     void addCube(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color_vec);
     void addSphere(glm::vec3 center, float radius, glm::vec3 color_vec, int detail_level=2);

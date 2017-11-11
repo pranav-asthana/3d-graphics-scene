@@ -8,7 +8,10 @@
 class Grass
 {
 public:
+    /// Create a Grass object in a rectangular patch with given endpoints
     Grass(glm::vec2 left_bottom, glm::vec2 top_right); // For rectangular patch
+
+    /// Return a Mesh object of the Grass
     Mesh getMesh();
 private:
     Mesh grass;

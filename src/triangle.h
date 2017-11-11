@@ -10,6 +10,7 @@ public:
     glm::vec3 B;
     glm::vec3 C;
 
+    /// Create a tringle with given vertices
     Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3)
     {
         A = v1;

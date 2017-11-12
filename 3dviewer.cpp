@@ -20,7 +20,7 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 34.0f
+#define SQUARE_SIDE 40.0f
 #define MIN_ALT 0.5f
 #define MAX_ALT 100.0f
 
@@ -271,11 +271,21 @@ int main()
     }
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
-    ObjectData swing, carousel, swingChair, rollerCoaster;
+    ObjectData swing, carousel, swingChair, cg;
+    ObjectData coaster_track1, coaster_track2, coaster_track3, coaster_cart,
+                coaster_glasses, coaster_head, coaster_mouth;
     generateModelVAO("swing_seat.obj", swingChair, swing_chair_color);
     generateModelVAO("swing_frame.obj", swing, swing_frame_color);
     generateModelVAO("1simple_round.obj", carousel, carousel_color);
-    generateModelVAO("coaster_run.obj", rollerCoaster, model_color_array);
+    generateModelVAO("coaster_cart.obj", coaster_cart, cart_color);
+    generateModelVAO("coaster_track1.obj", coaster_track1, track_color);
+    generateModelVAO("coaster_track2.obj", coaster_track2, track_color);
+    generateModelVAO("coaster_track3.obj", coaster_track3, track_color);
+    generateModelVAO("coaster_glasses.obj", coaster_glasses, glasses_color);
+    generateModelVAO("coaster_head.obj", coaster_head, monkey_color);
+    generateModelVAO("coaster_mouth.obj", coaster_mouth, mouth_color);
+    generateModelVAO("cg.obj", cg, model_color_array);
+
     // cout << rollerCoaster.index
 
     glClearColor(1.0f, 0.6f, 0.35f, 0.0f);
@@ -296,8 +306,8 @@ int main()
     scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
     const int squareSize = 15;
-    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
-    scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
+    // scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
+    // scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
 
     // scene.addPath(glm::vec2(-squareSize, -squareSize), glm::vec2(squareSize,squareSize), glm::vec3(1,0,0));
     // scene.addPath(glm::vec2(x_min,z_min), glm::vec2(x_max,z_max), glm::vec3(1,0,0));
@@ -315,7 +325,7 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        cout << "FPS: " << 1.0f/deltaTime << endl;
+        // cout << "FPS: " << 1.0f/deltaTime << endl;
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
@@ -330,8 +340,27 @@ int main()
                             swing.indexSize, true, glm::vec3(5,0,3));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
                             swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
-        drawGenericObject(rollerCoaster.ModelArrayID, programID, proj, view,
-                            rollerCoaster.indexSize, true, glm::vec3(4,3,4));//, glm::vec3(0.25, 0.25, 0.25));
+
+        drawGenericObject(coaster_cart.ModelArrayID, programID, proj, view,
+                            coaster_cart.indexSize, true, coasterPosition, coasterScale);
+        drawGenericObject(coaster_track1.ModelArrayID, programID, proj, view,
+                            coaster_track1.indexSize, true, coasterPosition, coasterScale);
+        drawGenericObject(coaster_track2.ModelArrayID, programID, proj, view,
+                            coaster_track2.indexSize, true, coasterPosition, coasterScale);
+        drawGenericObject(coaster_track3.ModelArrayID, programID, proj, view,
+                            coaster_track3.indexSize, true, coasterPosition, coasterScale);
+
+        drawGenericObject(coaster_mouth.ModelArrayID, programID, proj, view,
+                            coaster_mouth.indexSize, true, coasterPosition, coasterScale);
+        drawGenericObject(coaster_head.ModelArrayID, programID, proj, view,
+                            coaster_head.indexSize, true, coasterPosition, coasterScale);
+        drawGenericObject(coaster_glasses.ModelArrayID, programID, proj, view,
+                            coaster_glasses.indexSize, true, coasterPosition, coasterScale);
+
+
+
+        // drawGenericObject(cg.ModelArrayID, programID, proj, view,
+        //                     cg.indexSize, true, glm::vec3(0,5,0));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

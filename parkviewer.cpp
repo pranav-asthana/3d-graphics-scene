@@ -322,12 +322,12 @@ int main()
     	glUseProgram(programID);
 
         drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-                            carousel.indexSize, true, glm::vec3(10, 0, 13), glm::vec3(1,1,1),
+                            carousel.indexSize, true, carouselPosition, carouselScale,
                             (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view,
-                            swing.indexSize, true, glm::vec3(-12, 0, 14), glm::vec3(1.5, 2.5, 1));
+                            swing.indexSize, true, swingPosition, swingScale);
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
-                            swingChair.indexSize, true, glm::vec3(-11.75, -1, 14), glm::vec3(1, 3, 1));
+                            swingChair.indexSize, true, swingChairPosition, swingChairScale);
         drawGenericObject(coaster_cart.ModelArrayID, programID, proj, view,
                             coaster_cart.indexSize, true, coasterPosition, coasterScale);
         drawGenericObject(coaster_track1.ModelArrayID, programID, proj, view,

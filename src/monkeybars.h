@@ -8,7 +8,10 @@
 class MonkeyBars
 {
 public:
+    /// Create a MonkeyBars object of given length and height
     MonkeyBars(int length, int height);
+
+    /// Return a Mesh object of the MonkeyBars
     Mesh getMesh();
 
 private:

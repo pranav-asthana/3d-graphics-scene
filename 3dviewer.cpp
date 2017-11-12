@@ -20,7 +20,7 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 40.0f
+#define SQUARE_SIDE 20
 #define MIN_ALT 0.5f
 #define MAX_ALT 100.0f
 
@@ -296,22 +296,25 @@ int main()
 
     glm::mat4 proj;
     glm::mat4 view;
-    const int offset = 7.5;
     Scene scene = Scene();
-    scene.addMonkeyBars(glm::vec3(-4, 0, 0), glm::vec3(1.0, 1.0, 0.2), 7, 3);
-    scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
-    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.6, 0.3, 0.1), 3,
-                    glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0),
-                    glm::vec3(0, 1, 0)));
-    scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
-    scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
-    const int squareSize = 15;
-    // scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
-    // scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
 
-    // scene.addPath(glm::vec2(-squareSize, -squareSize), glm::vec2(squareSize,squareSize), glm::vec3(1,0,0));
-    // scene.addPath(glm::vec2(x_min,z_min), glm::vec2(x_max,z_max), glm::vec3(1,0,0));
-    // scene.addCube(glm::vec3(0,0,0), glm::vec3(110, 50, 110), glm::vec3(0.6, 0.5, 0.2));
+    glm::mat4 T;
+
+    scene.addSeeSaw(glm::vec3(10, 0, 6));
+
+    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0), glm::vec3(0, 1, 0));
+    scene.addSlide(glm::vec3(-5, 0, 8), glm::vec3(0.6, 0.3, 0.1), 4, T);
+
+    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(90.0), glm::vec3(0, 1, 0));
+    scene.addMonkeyBars(glm::vec3(-8, 0, 11), glm::vec3(.0, 1.0, 0.2), 7, 3, T);
+
+    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 20), glm::vec3(0.2, 0.2, 0.2));
+    scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
+
+    scene.addFence(glm::vec4(x_min, x_max, z_min, z_max));
+    scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
+
+    scene.addSculpture();
 
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
@@ -334,13 +337,11 @@ int main()
     	glUseProgram(programID);
 
         drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-                            carousel.indexSize, true, glm::vec3(0,0.2,0),
-                            glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+                            carousel.indexSize, true, glm::vec3(10, 0, 13), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view,
-                            swing.indexSize, true, glm::vec3(5,0,3));
+                            swing.indexSize, true, glm::vec3(-12, 0, 14), glm::vec3(1.5, 2.5, 1));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
-                            swingChair.indexSize, true, glm::vec3(5,0,3), glm::vec3(1,1,1));
-
+                            swingChair.indexSize, true, glm::vec3(-11.75, -1, 14), glm::vec3(1, 3, 1));
         drawGenericObject(coaster_cart.ModelArrayID, programID, proj, view,
                             coaster_cart.indexSize, true, coasterPosition, coasterScale);
         drawGenericObject(coaster_track1.ModelArrayID, programID, proj, view,
@@ -356,11 +357,6 @@ int main()
                             coaster_head.indexSize, true, coasterPosition, coasterScale);
         drawGenericObject(coaster_glasses.ModelArrayID, programID, proj, view,
                             coaster_glasses.indexSize, true, coasterPosition, coasterScale);
-
-
-
-        // drawGenericObject(cg.ModelArrayID, programID, proj, view,
-        //                     cg.indexSize, true, glm::vec3(0,5,0));
 
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);

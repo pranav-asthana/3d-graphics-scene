@@ -27,7 +27,7 @@
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 1.0f,  6.0f);
+glm::vec3 cameraPos   = glm::vec3(0.0f, 1.0f,  30.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
@@ -102,19 +102,6 @@ void processInput(GLFWwindow *window)
         cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-    if (cameraPos.x < BOUND_X1)
-        cameraPos.x = BOUND_X1;
-    if (cameraPos.x > BOUND_X2)
-        cameraPos.x = BOUND_X2;
-    if (cameraPos.y < BOUND_Y1)
-        cameraPos.y = BOUND_Y1;
-    if (cameraPos.y > BOUND_Y2)
-        cameraPos.y = BOUND_Y2;
-    if (cameraPos.z < BOUND_Z1)
-        cameraPos.z = BOUND_Z1;
-    if (cameraPos.z > BOUND_Z2)
-        cameraPos.z = BOUND_Z2;
 }
 
 void renderMesh(Mesh * mesh, GLfloat * color_vector)
@@ -179,26 +166,22 @@ int main()
     Scene scene = Scene();
 
     glm::mat4 T;
-    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0), glm::vec3(0, 1, 0));
 
-    scene.addMonkeyBars(glm::vec3(-10, 0, 0), glm::vec3(0.5, 1, 0.5), 7, 3);
-    scene.addSeeSaw(glm::vec3(10, 0, 0), glm::vec3(0.2, 0.2, 0.7));
-    scene.addSlide(glm::vec3(-4, 0, -10), glm::vec3(0.7, 0, 0), 3, T);
+    scene.addSeeSaw(glm::vec3(10, 0, 6));
+
+    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(150.0), glm::vec3(0, 1, 0));
+    scene.addSlide(glm::vec3(-5, 0, 8), glm::vec3(0.7, 0, 0), 4, T);
+
+    T = glm::rotate(glm::mat4(1.0), (float)glm::radians(90.0), glm::vec3(0, 1, 0));
+    scene.addMonkeyBars(glm::vec3(-8, 0, 11), glm::vec3(0.5, 1, 0.5), 7, 3, T);
+
     scene.addFence(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
     scene.addFloor(glm::vec4(BOUND_X1, BOUND_X2, BOUND_Z1, BOUND_Z2));
 
-    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 19), glm::vec3(0.2, 0.2, 0.2));
+    scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 20), glm::vec3(0.2, 0.2, 0.2));
     scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
 
-
-    // for (int tiles = 0; tiles < 10; tiles++)
-    // {
-    //     scene.addCube(glm::vec3(0.55, 0, tiles+0.5), glm::vec3(0.9, 0.1, 0.95), glm::vec3(0.2, 0.2, 0.2));
-    //     scene.addGrass(glm::vec2(0, tiles), glm::vec2(0.1, tiles+1), glm::vec3(0, 1, 0)); // LEFT
-    //     scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // RIGHT
-    //     scene.addGrass(glm::vec2(0, tiles-0.05), glm::vec2(1, tiles), glm::vec3(0, 1, 0)); // TOP
-    //     // scene.addGrass(glm::vec2(1, tiles), glm::vec2(1.1, tiles+1), glm::vec3(0, 1, 0)); // BOTTOM
-    // }
+    scene.addSculpture();
 
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();

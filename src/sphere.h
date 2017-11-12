@@ -6,7 +6,11 @@
 class Sphere
 {
 public:
+    /// Create a sphere of given radius.
+    /// Optional argument: Level of recursion to go while generating vertices from Icosahedron
     Sphere(float radius, int detail_level);
+
+    /// Return a Mesh object of the Sphere
     Mesh getMesh();
 private:
     Mesh sphereMesh;

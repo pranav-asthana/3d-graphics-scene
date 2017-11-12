@@ -25,7 +25,8 @@ Mesh Icosahedron::createMesh(float radius)
     };
 
     for (int i = 0;i < 12; i++)
-        v[i] = rScale * v[i];
+        v[i] = radius * glm::normalize(v[i]);
+        // v[i] = rScale * v[i];
 
     mesh.addTriangle(v[0], v[11], v[5]);
     mesh.addTriangle(v[0], v[5], v[1]);

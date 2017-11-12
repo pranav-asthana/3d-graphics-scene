@@ -7,8 +7,10 @@
 class Icosahedron
 {
 public:
+    /// Create an Icosahedron object of given radius
     Icosahedron(float radius);
 
+    /// Return a Mesh object of the Icosahedron
     Mesh getMesh();
 private:
     Mesh mesh;

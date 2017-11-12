@@ -1,6 +1,6 @@
 glm::vec3 lightPos = glm::vec3(0, 10, 0);
-glm::vec3 coasterScale = glm::vec3(0.25, 0.25, 0.25);
-glm::vec3 coasterPosition = glm::vec3(4,3,4);
+glm::vec3 coasterScale = glm::vec3(0.5, 0.5, 0.5);
+glm::vec3 coasterPosition = glm::vec3(0,2,-10);
 static const GLfloat model_color_array[] = {1.0f, 1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f};
 static const GLfloat swing_chair_color[] = {0.5f, 0.2f, 0.2f, 0.5f, 0.2f, 0.2f, 0.5f, 0.2f, 0.2f};
 static const GLfloat swing_frame_color[] = {0.8f, 0.6f, 0.0f, 0.8f, 0.6f, 0.0f, 0.8f, 0.6f, 0.0f};

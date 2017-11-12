@@ -305,11 +305,6 @@ int main()
     scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
 
-    Mesh sky = Cube(20, 20, 20).getMesh();
-    vector<GLfloat> skycolors;
-    skycolors.push_back(1.0);
-    mesh_group.push_back(sky);
-    color_vector_group.push_back(skycolors);
 
 
     vector<Mesh> mesh_group = scene.getMesh();
@@ -332,11 +327,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	glUseProgram(programID);
 
-        // drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-        //                     carousel.indexSize, true, glm::vec3(0,0.2,0),
-        //                     glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-                            carousel.indexSize, true, glm::vec3(10, 0, 12));
+                            carousel.indexSize, true, glm::vec3(10, 0, 12), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view,
                             swing.indexSize, true, glm::vec3(-12, 0, 14), glm::vec3(1.5, 2.5, 1));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,

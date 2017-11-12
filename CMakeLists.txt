@@ -5,12 +5,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og -Wall -Wextra")
 project(opengl_assignment)
-include_directories("src/")
-add_executable(3dviewer 3dviewer.cpp shader.cpp Camera.cpp "src/utilities.cpp" "src/mesh.cpp" "src/icosahedron.cpp" "src/sphere.cpp" "src/cube.cpp" "src/cylinder.cpp" "src/monkeybars.cpp" "src/seesaw.cpp" "src/slide.cpp" "src/scene.cpp" "src/grass.cpp")
+# include_directories("src/")
+add_executable(3dviewer 3dviewer.cpp "src/shader.cpp" "src/Camera.cpp" "src/utilities.cpp" "src/mesh.cpp" "src/icosahedron.cpp" "src/sphere.cpp" "src/cube.cpp" "src/cylinder.cpp" "src/monkeybars.cpp" "src/seesaw.cpp" "src/slide.cpp" "src/scene.cpp" "src/grass.cpp")
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ColorFragmentShader.fragmentshader
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/ColorFragmentShader.fragmentshader
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/TransformVertexShader.vertexshader
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/TransformVertexShader.vertexshader
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/swing_frame.obj
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

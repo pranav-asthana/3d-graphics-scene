@@ -16,8 +16,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "shader.hpp"
-#include "Camera.h"
+#include "src/shader.h"
+#include "src/Camera.h"
 #include "Constants.h"
 #include "src/scene.h"
 

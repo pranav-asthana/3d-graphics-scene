@@ -172,3 +172,35 @@ void Scene::addPath(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_
         }
     }
 }
+
+void Scene::addSculpture()
+{
+    Mesh s1 = Sphere(1, 3).getMesh();
+    Mesh s2 = Sphere(0.5, 2).getMesh();
+    Mesh s3 = Sphere(0.75, 1).getMesh();
+
+    glm::mat4 T;
+
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0, 0.7, 1));
+    s1.transform(T);
+
+    T = glm::translate(glm::mat4(1.0), glm::vec3(0.2, 2.1, 1));
+    s2.transform(T);
+
+    T = glm::translate(glm::mat4(1.0), glm::vec3(-0.4, 3, 1));
+    s3.transform(T);
+
+    vector<GLfloat> c1 = getColorVector(glm::vec3(0.8, 0.8, 0.8), (s1.getVertices()).size());
+    vector<GLfloat> c2 = getColorVector(glm::vec3(0.8, 0.0, 0.8), (s2.getVertices()).size());
+    vector<GLfloat> c3 = getColorVector(glm::vec3(0.3, 0.8, 0.0), (s3.getVertices()).size());
+
+    c1 = joinColors(c1, c2);
+    c1 = joinColors(c1, c3);
+
+    s1.joinMesh(s2);
+    s1.joinMesh(s3);
+
+    meshes.push_back(s1);
+    colors.push_back(c1);
+
+}

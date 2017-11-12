@@ -181,6 +181,8 @@ int main()
     scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 20), glm::vec3(0.2, 0.2, 0.2));
     scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
 
+    scene.addSculpture();
+
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
 

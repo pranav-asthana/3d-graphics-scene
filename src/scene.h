@@ -40,6 +40,8 @@ public:
     void addFloor(glm::vec4 bounds);
     void addGrass(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec);
     void addPath(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec);
+
+    void addSculpture();
 private:
     vector<Mesh> meshes;
     vector<vector<GLfloat>> colors;

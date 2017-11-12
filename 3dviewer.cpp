@@ -20,7 +20,7 @@
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 27
+#define SQUARE_SIDE 20
 #define MIN_ALT 0.5f
 #define MAX_ALT 100.0f
 
@@ -286,7 +286,6 @@ int main()
 
     glm::mat4 proj;
     glm::mat4 view;
-    const int offset = 7.5;
     Scene scene = Scene();
 
     glm::mat4 T;
@@ -302,10 +301,10 @@ int main()
     scene.addPath(glm::vec2(-1, 0), glm::vec2(1, 20), glm::vec3(0.2, 0.2, 0.2));
     scene.addPath(glm::vec2(-19, 0), glm::vec2(19, 2), glm::vec3(0.2, 0.2, 0.2));
 
-    scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
+    scene.addFence(glm::vec4(x_min, x_max, z_min, z_max));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
 
-
+    scene.addSculpture();
 
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
@@ -328,7 +327,7 @@ int main()
     	glUseProgram(programID);
 
         drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-                            carousel.indexSize, true, glm::vec3(10, 0, 12), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+                            carousel.indexSize, true, glm::vec3(10, 0, 13), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view,
                             swing.indexSize, true, glm::vec3(-12, 0, 14), glm::vec3(1.5, 2.5, 1));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,

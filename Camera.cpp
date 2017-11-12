@@ -31,8 +31,8 @@ Camera::Camera(int screenHeight, int screenWidth, GLfloat x_min, GLfloat x_max, 
     MAX_FOV = 90;
     fov = MAX_FOV;
     cameraPos = glm::vec3(x_min, y_max, z_min);
-    cameraPos = glm::vec3(0, y_min+3, 0);
-    cameraFront = glm::vec3(1.0f, 0.0f, 1.0f);
+    cameraPos = glm::vec3(0, y_min+3, z_max+5);
+    cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
     this->x_min = x_min;
@@ -122,16 +122,16 @@ void Camera::processInput(GLFWwindow *window, float deltaTime)
         cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     }
 
-    if (cameraPos.x < x_min)
-        cameraPos.x = x_min;
-    if (cameraPos.x > x_max)
-        cameraPos.x = x_max;
-    if (cameraPos.y < y_min)
-        cameraPos.y = y_min;
-    if (cameraPos.y > y_max)
-        cameraPos.y = y_max;
-    if (cameraPos.z < z_min)
-        cameraPos.z = z_min;
-    if (cameraPos.z > z_max)
-        cameraPos.z = z_max;
+    // if (cameraPos.x < x_min)
+    //     cameraPos.x = x_min;
+    // if (cameraPos.x > x_max)
+    //     cameraPos.x = x_max;
+    // if (cameraPos.y < y_min)
+    //     cameraPos.y = y_min;
+    // if (cameraPos.y > y_max)
+    //     cameraPos.y = y_max;
+    // if (cameraPos.z < z_min)
+    //     cameraPos.z = z_min;
+    // if (cameraPos.z > z_max)
+    //     cameraPos.z = z_max;
 }

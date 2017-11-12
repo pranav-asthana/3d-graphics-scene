@@ -305,6 +305,13 @@ int main()
     scene.addFence(glm::vec4(x_min+offset, x_max-offset, z_min+offset, z_max-offset));
     scene.addFloor(glm::vec4(x_min, x_max, z_min, z_max));
 
+    Mesh sky = Cube(20, 20, 20).getMesh();
+    vector<GLfloat> skycolors;
+    skycolors.push_back(1.0);
+    mesh_group.push_back(sky);
+    color_vector_group.push_back(skycolors);
+
+
     vector<Mesh> mesh_group = scene.getMesh();
     vector<vector<GLfloat>> color_vector_group = scene.getColors();
 

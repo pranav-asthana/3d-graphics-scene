@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "-Og -Wall -Wextra")
 project(opengl_assignment)
 # include_directories("src/")
-add_executable(3dviewer 3dviewer.cpp "src/shader.cpp" "src/Camera.cpp" "src/utilities.cpp" "src/mesh.cpp" "src/icosahedron.cpp" "src/sphere.cpp" "src/cube.cpp" "src/cylinder.cpp" "src/monkeybars.cpp" "src/seesaw.cpp" "src/slide.cpp" "src/scene.cpp" "src/grass.cpp")
+add_executable(parkviewer parkviewer.cpp "src/shader.cpp" "src/Camera.cpp" "src/utilities.cpp" "src/mesh.cpp" "src/icosahedron.cpp" "src/sphere.cpp" "src/cube.cpp" "src/cylinder.cpp" "src/monkeybars.cpp" "src/seesaw.cpp" "src/slide.cpp" "src/scene.cpp" "src/grass.cpp")
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/ColorFragmentShader.fragmentshader
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -38,6 +38,6 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(assimp REQUIRED)
 
-include_directories( ${OPENGL_INCLUDE_DIRS})
-target_link_libraries(3dviewer ${OPENGL_LIBRARIES} glfw GLEW assimp dl)
+include_directories(${OPENGL_INCLUDE_DIRS})
+target_link_libraries(parkviewer ${OPENGL_LIBRARIES} glfw GLEW assimp dl)
 add_subdirectory(src)

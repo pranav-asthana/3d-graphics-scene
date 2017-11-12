@@ -17,9 +17,9 @@
 #include <assimp/postprocess.h>
 
 #include "src/shader.h"
+#include "src/scene.h"
 #include "src/Camera.h"
 #include "Constants.h"
-#include "src/scene.h"
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720

@@ -27,16 +27,20 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
                         GLfloat rotationAngle,
                         glm::vec3 rotationAxis)
 {
+    // Must match the name specified in the vertex shader.
     GLuint matrixID = glGetUniformLocation(programID, "MVP");
     GLuint modelID = glGetUniformLocation(programID, "model");
     GLuint lightID = glGetUniformLocation(programID, "LightPos");
 
+    // Binding the vertex array is equivalent to setting a global variable for the rest of the gl calls here
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, translationVector);
     model = glm::scale(model, scaleVector);
     model = glm::rotate(model, glm::radians(rotationAngle), rotationAxis);
     glm::mat4 MVP = proj*view*model;
+
+    // Pass our arrays over to the vertexshader for further transformations
     glUniformMatrix4fv(matrixID, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
     glUniform3fv(lightID, 1, &lightPos[0]);
@@ -45,6 +49,7 @@ void drawGenericObject(GLuint &VAO, GLuint programID,
     } else {
         glDrawArrays(GL_TRIANGLES, 0, size*3);
     }
+    // Unbinds the vertex array
     glBindVertexArray(0);
 }
 
@@ -75,6 +80,7 @@ bool loadAssImp(const char * path, std::vector<unsigned short> &indices,
 
 bool initOpenGL()
 {
+    // Set OpenGL version to 3.3
     glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -95,18 +101,22 @@ void setupMeshVAO(Mesh mesh, GLfloat* color_vector, vector<ObjectData> &objectVe
     GLfloat ModelNormalArray[normals.size()*3];
 
     ulong64_t i = 0;
+    // Working with a regular array is easier than working with vectors for passing on to the VS/FS
     for (auto it = normals.begin(); it != normals.end(); it++) {
         ModelNormalArray[i++] = it->x;
         ModelNormalArray[i++] = it->y;
         ModelNormalArray[i++] = it->z;
     }
 
+    // We are only generating one VA at a time for each object
     glGenVertexArrays(1, &(object.ModelArrayID));
     glBindVertexArray(object.ModelArrayID);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
+    // Separate buffers are created for the vertex buffer, color buffer, and normal buffer of the 3D object
+    // These buffers store the data and forward it on to the GPU to be processed further by the VS/FS
     glGenBuffers(1, &(object.ModelVBO));
     glBindBuffer(GL_ARRAY_BUFFER, object.ModelVBO);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
@@ -206,6 +216,9 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
                     indexList, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
+
+        // We wouldn't want memory leaks, would we?
+        // Once we have pushed the data to the GPU, we can safely delete the data
         delete[] ModelVertexArray;
         delete[] ModelColorArray;
         delete[] ModelNormalArray;
@@ -252,9 +265,11 @@ int main()
     generateModelVAO("coaster_head.obj", coaster_head, monkey_color);
     generateModelVAO("coaster_mouth.obj", coaster_mouth, mouth_color);
 
+    // Sky color
     glClearColor(1.0f, 0.8f, 0.45f, 0.9f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 
@@ -296,9 +311,13 @@ int main()
             cout << "FPS: " << 1.0f/deltaTime << endl;
         }
         lastFrame = currentFrame;
+
+        // Used for capturing the WASD keys and mouse
         camera.processInput(window, deltaTime);
+        // Defines what can be seen by the camera along with the clip boundaries of the scene
         proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
         view = camera.getCameraView();
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	glUseProgram(programID);
 
@@ -327,6 +346,7 @@ int main()
         for (auto it = sceneMesh.begin(); it != sceneMesh.end(); it++) {
             drawGenericObject(it->ModelArrayID, programID, proj, view, it->indexSize, false);
         }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

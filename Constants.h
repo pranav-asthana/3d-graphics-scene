@@ -10,7 +10,7 @@ glm::vec3 swingScale = glm::vec3(1.5, 2.5, 1);
 glm::vec3 swingPosition = glm::vec3(-12, 0, 14);
 
 glm::vec3 swingChairScale = glm::vec3(1, 3, 1);
-glm::vec3 swingChairPosition = glm::vec3(1.5, 2.5, 1);
+glm::vec3 swingChairPosition = glm::vec3(-11.75, -1, 14);
 
 static const GLfloat model_color_array[] = {1.0f, 1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f};
 static const GLfloat swing_chair_color[] = {0.5f, 0.2f, 0.2f, 0.5f, 0.2f, 0.2f, 0.5f, 0.2f, 0.2f};

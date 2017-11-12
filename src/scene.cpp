@@ -141,7 +141,7 @@ void Scene::addFloor(glm::vec4 bounds) //x-z bounds
 
     for (float i = bounds.z; i <= bounds.w; i+=1)
         addCylinder(glm::vec3(bounds.x+bounds.y, 0, i), (float) bounds.x-bounds.y, (float) 0.005, glm::vec3(0.7, 0.7, 0.7), glm::vec3(1, 0, 0));
-    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x + 10, 0.1, bounds.w-bounds.z + 10), glm::vec3(0.71, 0.65, 0.45));
+    addCube(glm::vec3(0, -0.1, 0), glm::vec3(bounds.y-bounds.x + 10, 0.1, bounds.w-bounds.z + 10), glm::vec3(0.41, 0.65, 0.45));
 }
 
 void Scene::addGrass(glm::vec2 left_bottom, glm::vec2 top_right, glm::vec3 color_vec)

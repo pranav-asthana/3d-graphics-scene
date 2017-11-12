@@ -125,10 +125,10 @@ void Camera::processInput(GLFWwindow *window, float deltaTime)
     //     cameraPos.x = x_min;
     // if (cameraPos.x > x_max)
     //     cameraPos.x = x_max;
-    // if (cameraPos.y < y_min)
-    //     cameraPos.y = y_min;
-    // if (cameraPos.y > y_max)
-    //     cameraPos.y = y_max;
+    if (cameraPos.y < y_min)
+        cameraPos.y = y_min;
+    if (cameraPos.y > y_max)
+        cameraPos.y = y_max;
     // if (cameraPos.z < z_min)
     //     cameraPos.z = z_min;
     // if (cameraPos.z > z_max)

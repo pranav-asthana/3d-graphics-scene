@@ -242,6 +242,9 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
                     indexList, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
+        delete[] ModelVertexArray;
+        delete[] ModelColorArray;
+        delete[] ModelNormalArray;
     }
 }
 
@@ -284,11 +287,8 @@ int main()
     generateModelVAO("coaster_glasses.obj", coaster_glasses, glasses_color);
     generateModelVAO("coaster_head.obj", coaster_head, monkey_color);
     generateModelVAO("coaster_mouth.obj", coaster_mouth, mouth_color);
-    generateModelVAO("cg.obj", cg, model_color_array);
 
-    // cout << rollerCoaster.index
-
-    glClearColor(1.0f, 0.6f, 0.35f, 0.0f);
+    glClearColor(1.0f, 0.8f, 0.45f, 0.9f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
@@ -350,7 +350,6 @@ int main()
                             coaster_track2.indexSize, true, coasterPosition, coasterScale);
         drawGenericObject(coaster_track3.ModelArrayID, programID, proj, view,
                             coaster_track3.indexSize, true, coasterPosition, coasterScale);
-
         drawGenericObject(coaster_mouth.ModelArrayID, programID, proj, view,
                             coaster_mouth.indexSize, true, coasterPosition, coasterScale);
         drawGenericObject(coaster_head.ModelArrayID, programID, proj, view,

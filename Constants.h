@@ -1,4 +1,4 @@
-glm::vec3 lightPos = glm::vec3(0, 10, 0);
+glm::vec3 lightPos = glm::vec3(0, 10, 20);
 glm::vec3 coasterScale = glm::vec3(0.5, 0.5, 0.5);
 glm::vec3 coasterPosition = glm::vec3(0,2,-10);
 static const GLfloat model_color_array[] = {1.0f, 1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f};

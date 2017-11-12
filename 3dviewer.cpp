@@ -1,67 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <cstring>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "3dviewer.h"
 
-#include "shader.hpp"
-#include "Camera.h"
-#include "Constants.h"
-#include "src/scene.h"
+static Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
-#define SQUARE_SIDE 20
-#define MIN_ALT 0.5f
-#define MAX_ALT 100.0f
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
-typedef unsigned long long ulong64_t;
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    camera.scroll_callback(window, xoffset, yoffset);
+}
 
-using namespace glm;
-using namespace std;
-
-const GLfloat x_min = -SQUARE_SIDE;
-const GLfloat x_max = SQUARE_SIDE;
-const GLfloat y_min = MIN_ALT;
-const GLfloat y_max = MAX_ALT;
-const GLfloat z_min = -SQUARE_SIDE;
-const GLfloat z_max = SQUARE_SIDE;
-
-typedef pair<GLuint, GLuint> VertexColorPair;
-GLFWwindow* window;
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
-
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
-struct ObjectData {
-    GLuint ModelArrayID, ModelVBO, ModelColorVBO, ModelNormalVBO, EBO, indexSize;
-};
-
-Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    camera.mouse_callback(window, xpos, ypos);
+}
 
 void drawGenericObject(GLuint &VAO, GLuint programID,
                         glm::mat4 proj,
                         glm::mat4 view,
                         int size,
                         bool elemental,
-                        glm::vec3 translationVector = glm::vec3(0,0,0),
-                        glm::vec3 scaleVector = glm::vec3(1,1,1),
-                        GLfloat rotationAngle = 0,
-                        glm::vec3 rotationAxis = glm::vec3(1,0,0))
+                        glm::vec3 translationVector,
+                        glm::vec3 scaleVector,
+                        GLfloat rotationAngle,
+                        glm::vec3 rotationAxis)
 {
     GLuint matrixID = glGetUniformLocation(programID, "MVP");
     GLuint modelID = glGetUniformLocation(programID, "model");
@@ -258,14 +222,14 @@ int main()
     if (!initOpenGL()) {
         return -1;
     }
-    // Open a window and create its OpenGL context
+
     window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
     if(window == NULL){
         glfwTerminate();
         return -1;
     }
     setCallBacks(window);
-    glewExperimental = true; // Needed for core profile
+    glewExperimental = true;
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
         getchar();
@@ -292,7 +256,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-    GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader" );
+    GLuint programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
 
     glm::mat4 proj;
     glm::mat4 view;
@@ -328,7 +292,9 @@ int main()
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        // cout << "FPS: " << 1.0f/deltaTime << endl;
+        if (SHOW_FPS) {
+            cout << "FPS: " << 1.0f/deltaTime << endl;
+        }
         lastFrame = currentFrame;
         camera.processInput(window, deltaTime);
         proj = glm::perspective(glm::radians(camera.getFOV()), (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.2f, 100.0f);
@@ -337,7 +303,8 @@ int main()
     	glUseProgram(programID);
 
         drawGenericObject(carousel.ModelArrayID, programID, proj, view,
-                            carousel.indexSize, true, glm::vec3(10, 0, 13), glm::vec3(1,1,1), (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
+                            carousel.indexSize, true, glm::vec3(10, 0, 13), glm::vec3(1,1,1),
+                            (float)glfwGetTime()*45.0f, glm::vec3(0,1,0));
         drawGenericObject(swing.ModelArrayID, programID, proj, view,
                             swing.indexSize, true, glm::vec3(-12, 0, 14), glm::vec3(1.5, 2.5, 1));
         drawGenericObject(swingChair.ModelArrayID, programID, proj, view,
@@ -367,19 +334,4 @@ int main()
 
 	glfwTerminate();
     return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.scroll_callback(window, xoffset, yoffset);
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-    camera.mouse_callback(window, xpos, ypos);
 }

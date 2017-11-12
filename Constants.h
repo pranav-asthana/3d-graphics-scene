@@ -10,5 +10,3 @@ static const GLfloat mouth_color[] = {0.274, 0, 0.470, 0.274, 0, 0.470, 0.274, 0
 static const GLfloat monkey_color[] = {0.901, 0, 0, 0.901, 0, 0, 0.901, 0, 0};
 static const GLfloat track_color[] = {0, 0, 0.666, 0, 0, 0.666, 0, 0, 0.666};
 static const GLfloat cart_color[] = {1, 0.901, 0, 1, 0.901, 0, 1, 0.901, 0};
-// static const GLfloat carousel_color[] = {0.2f, 0.2f, 0.8f, 0.2f, 0.2f, 0.8f, 0.2f, 0.2f, 0.8f};
-// static const GLfloat carousel_color[] = {1.0f, 1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f};

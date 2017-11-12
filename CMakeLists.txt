@@ -7,9 +7,6 @@ set(CMAKE_CXX_FLAGS "-Og -Wall -Wextra")
 project(opengl_assignment)
 include_directories("src/")
 add_executable(3dviewer 3dviewer.cpp shader.cpp Camera.cpp "src/utilities.cpp" "src/mesh.cpp" "src/icosahedron.cpp" "src/sphere.cpp" "src/cube.cpp" "src/cylinder.cpp" "src/monkeybars.cpp" "src/seesaw.cpp" "src/slide.cpp" "src/scene.cpp" "src/grass.cpp")
-# configure_file("../ColorFragmentShader.fragmentshader" "./ColorFragmentShader.fragmentshader" COPYONLY)
-# configure_file("../TransformVertexShader.vertexshader" "./TransformVertexShader.vertexshader" COPYONLY)
-# add_executable(3dviewer 3dviewer.cpp shader.cpp "src/scene.cpp" )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/ColorFragmentShader.fragmentshader
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

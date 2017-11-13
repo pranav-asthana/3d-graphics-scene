@@ -1,0 +1,5 @@
+INPUT                  = .
+RECURSIVE              = YES
+MACRO_EXPANSION        = YES
+INCLUDE_PATH           = .
+OUTPUT_DIRECTORY       = ./docs

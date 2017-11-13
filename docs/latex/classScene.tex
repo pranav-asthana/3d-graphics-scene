@@ -1,0 +1,53 @@
+\hypertarget{classScene}{}\section{Scene Class Reference}
+\label{classScene}\index{Scene@{Scene}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classScene_ad10176d75a9cc0da56626f682d083507}{Scene} ()\hypertarget{classScene_ad10176d75a9cc0da56626f682d083507}{}\label{classScene_ad10176d75a9cc0da56626f682d083507}
+
+\begin{DoxyCompactList}\small\item\em Initialize a \hyperlink{classScene}{Scene} object. \end{DoxyCompactList}\item 
+vector$<$ \hyperlink{classMesh}{Mesh} $>$ \hyperlink{classScene_a12e88ab3a99c3f5e46a18c71597e8aba}{get\+Mesh} ()\hypertarget{classScene_a12e88ab3a99c3f5e46a18c71597e8aba}{}\label{classScene_a12e88ab3a99c3f5e46a18c71597e8aba}
+
+\begin{DoxyCompactList}\small\item\em Return a \hyperlink{classMesh}{Mesh} vector of all elements of the scene. \end{DoxyCompactList}\item 
+vector$<$ vector$<$ G\+Lfloat $>$ $>$ \hyperlink{classScene_a02cb0b9e74e508d00ff4796843f63911}{get\+Colors} ()\hypertarget{classScene_a02cb0b9e74e508d00ff4796843f63911}{}\label{classScene_a02cb0b9e74e508d00ff4796843f63911}
+
+\begin{DoxyCompactList}\small\item\em Return a vector of the color G\+Lfloat vectors of the elements of the scene. \end{DoxyCompactList}\item 
+void {\bfseries add\+Cube} (glm\+::vec3 center, glm\+::vec3 dimensions, glm\+::vec3 color\+\_\+vec)\hypertarget{classScene_af4e4a7106047fcf25d31b83d2d6250ec}{}\label{classScene_af4e4a7106047fcf25d31b83d2d6250ec}
+
+\item 
+void {\bfseries add\+Sphere} (glm\+::vec3 center, float radius, glm\+::vec3 color\+\_\+vec, int detail\+\_\+level=2)\hypertarget{classScene_a16f73b7071459effba8ab735e052075d}{}\label{classScene_a16f73b7071459effba8ab735e052075d}
+
+\item 
+void {\bfseries add\+Cylinder} (glm\+::vec3 center, float height, float radius, glm\+::vec3 color\+\_\+vec, glm\+::vec3 orientation)\hypertarget{classScene_a409b7a6c62864b577d18bfa0a21328b8}{}\label{classScene_a409b7a6c62864b577d18bfa0a21328b8}
+
+\item 
+void {\bfseries add\+Monkey\+Bars} (glm\+::vec3 position, glm\+::vec3 color\+\_\+vec, int length, int height, glm\+::mat4 transformation=glm\+::mat4(1.\+0))\hypertarget{classScene_a675b27fd6d43d476ea72e24516e74e29}{}\label{classScene_a675b27fd6d43d476ea72e24516e74e29}
+
+\item 
+void {\bfseries add\+See\+Saw} (glm\+::vec3 position, glm\+::mat4 transformation=glm\+::mat4(1.\+0))\hypertarget{classScene_a34b6ec965fa29f846960a8d0a1a29ab8}{}\label{classScene_a34b6ec965fa29f846960a8d0a1a29ab8}
+
+\item 
+void {\bfseries add\+Slide} (glm\+::vec3 position, glm\+::vec3 color\+\_\+vec, int height, glm\+::mat4 transformation=glm\+::mat4(1.\+0))\hypertarget{classScene_a0f48f51679e3fa19186dd14882f4aaa4}{}\label{classScene_a0f48f51679e3fa19186dd14882f4aaa4}
+
+\item 
+void {\bfseries add\+Fence} (glm\+::vec4 bounds)\hypertarget{classScene_acdf5c0ffe3705f348bde81588cba0772}{}\label{classScene_acdf5c0ffe3705f348bde81588cba0772}
+
+\item 
+void {\bfseries add\+Floor} (glm\+::vec4 bounds)\hypertarget{classScene_a3f3d563d0a651e912f478d7f3205ea43}{}\label{classScene_a3f3d563d0a651e912f478d7f3205ea43}
+
+\item 
+void {\bfseries add\+Grass} (glm\+::vec2 left\+\_\+bottom, glm\+::vec2 top\+\_\+right, glm\+::vec3 color\+\_\+vec)\hypertarget{classScene_ad12ad7ae32e254ec1c5e8e5e62be3c60}{}\label{classScene_ad12ad7ae32e254ec1c5e8e5e62be3c60}
+
+\item 
+void {\bfseries add\+Path} (glm\+::vec2 left\+\_\+bottom, glm\+::vec2 top\+\_\+right, glm\+::vec3 color\+\_\+vec)\hypertarget{classScene_a6bd399270b6bdf6743a740bf3adf0faf}{}\label{classScene_a6bd399270b6bdf6743a740bf3adf0faf}
+
+\item 
+void {\bfseries add\+Sculpture} ()\hypertarget{classScene_a6ebf6ab55c8a302bd82d89761acec3b2}{}\label{classScene_a6ebf6ab55c8a302bd82d89761acec3b2}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{scene_8h}{scene.\+h}\item 
+src/scene.\+cpp\end{DoxyCompactItemize}

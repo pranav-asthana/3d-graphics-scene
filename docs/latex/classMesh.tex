@@ -1,0 +1,35 @@
+\hypertarget{classMesh}{}\section{Mesh Class Reference}
+\label{classMesh}\index{Mesh@{Mesh}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMesh_a2af137f1571af89172b9c102302c416b}{Mesh} ()\hypertarget{classMesh_a2af137f1571af89172b9c102302c416b}{}\label{classMesh_a2af137f1571af89172b9c102302c416b}
+
+\begin{DoxyCompactList}\small\item\em Initialize an empty \hyperlink{classMesh}{Mesh} object. \end{DoxyCompactList}\item 
+void \hyperlink{classMesh_a19d1ba64a723a63f89c9abba02ea2a4c}{add\+Triangle} (glm\+::vec3 v1, glm\+::vec3 v2, glm\+::vec3 v3)\hypertarget{classMesh_a19d1ba64a723a63f89c9abba02ea2a4c}{}\label{classMesh_a19d1ba64a723a63f89c9abba02ea2a4c}
+
+\begin{DoxyCompactList}\small\item\em Add a triangle to the mesh with given vertices. \end{DoxyCompactList}\item 
+void \hyperlink{classMesh_afc3c234a4be90064ec9bb52682a5de85}{add\+Quad} (glm\+::vec3 v1, glm\+::vec3 v2, glm\+::vec3 v3, glm\+::vec3 v4)\hypertarget{classMesh_afc3c234a4be90064ec9bb52682a5de85}{}\label{classMesh_afc3c234a4be90064ec9bb52682a5de85}
+
+\begin{DoxyCompactList}\small\item\em Add a quadrilateral to the mesh with given vertices. \end{DoxyCompactList}\item 
+vector$<$ G\+Lfloat $>$ \hyperlink{classMesh_a1f6642b125a065535a5d39d26aece8c1}{get\+Vertices} ()\hypertarget{classMesh_a1f6642b125a065535a5d39d26aece8c1}{}\label{classMesh_a1f6642b125a065535a5d39d26aece8c1}
+
+\begin{DoxyCompactList}\small\item\em Return a G\+Lfloat vector of vertices of the mesh as x, y, z. \end{DoxyCompactList}\item 
+vector$<$ \hyperlink{classTriangle}{Triangle} $>$ \hyperlink{classMesh_ad3661c1cb45005759607475ef5f1273c}{get\+Triangles} ()\hypertarget{classMesh_ad3661c1cb45005759607475ef5f1273c}{}\label{classMesh_ad3661c1cb45005759607475ef5f1273c}
+
+\begin{DoxyCompactList}\small\item\em Return a \hyperlink{classTriangle}{Triangle} vector of traingles of the mesh. \end{DoxyCompactList}\item 
+vector$<$ glm\+::vec3 $>$ \hyperlink{classMesh_a1da11111fe8808032a1ba756b20a4c24}{get\+Normals} ()\hypertarget{classMesh_a1da11111fe8808032a1ba756b20a4c24}{}\label{classMesh_a1da11111fe8808032a1ba756b20a4c24}
+
+\begin{DoxyCompactList}\small\item\em Return a vec3 vector of normals to each triangle of the mesh. \end{DoxyCompactList}\item 
+void \hyperlink{classMesh_acbeadf3e6e460863e9804f1950c41315}{transform} (glm\+::mat4 transformation)\hypertarget{classMesh_acbeadf3e6e460863e9804f1950c41315}{}\label{classMesh_acbeadf3e6e460863e9804f1950c41315}
+
+\begin{DoxyCompactList}\small\item\em Apply a transformation matrix to the mesh. \end{DoxyCompactList}\item 
+void \hyperlink{classMesh_afe813142fb85a732f95b127ab313d5c7}{join\+Mesh} (\hyperlink{classMesh}{Mesh} mesh)\hypertarget{classMesh_afe813142fb85a732f95b127ab313d5c7}{}\label{classMesh_afe813142fb85a732f95b127ab313d5c7}
+
+\begin{DoxyCompactList}\small\item\em Concatenate a \hyperlink{classMesh}{Mesh} to the calling \hyperlink{classMesh}{Mesh}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{mesh_8h}{mesh.\+h}\item 
+src/mesh.\+cpp\end{DoxyCompactItemize}

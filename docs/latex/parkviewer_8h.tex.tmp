@@ -1,0 +1,164 @@
+\hypertarget{parkviewer_8h}{}\section{parkviewer.\+h File Reference}
+\label{parkviewer_8h}\index{parkviewer.\+h@{parkviewer.\+h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\\*
+{\ttfamily \#include $<$stdlib.\+h$>$}\\*
+{\ttfamily \#include $<$G\+L/glew.\+h$>$}\\*
+{\ttfamily \#include $<$G\+L\+F\+W/glfw3.\+h$>$}\\*
+{\ttfamily \#include $<$glm/glm.\+hpp$>$}\\*
+{\ttfamily \#include $<$glm/gtc/matrix\+\_\+transform.\+hpp$>$}\\*
+{\ttfamily \#include $<$glm/gtx/transform.\+hpp$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$utility$>$}\\*
+{\ttfamily \#include $<$cstring$>$}\\*
+{\ttfamily \#include $<$assimp/\+Importer.\+hpp$>$}\\*
+{\ttfamily \#include $<$assimp/scene.\+h$>$}\\*
+{\ttfamily \#include $<$assimp/postprocess.\+h$>$}\\*
+{\ttfamily \#include \char`\"{}src/shader.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}src/scene.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}src/\+Camera.\+h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Constants.\+h\char`\"{}}\\*
+Include dependency graph for parkviewer.\+h\+:
+% FIG 0
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structObjectData}{Object\+Data}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries S\+C\+R\+E\+E\+N\+\_\+\+W\+I\+D\+TH}~1280\hypertarget{parkviewer_8h_a2cd109632a6dcccaa80b43561b1ab700}{}\label{parkviewer_8h_a2cd109632a6dcccaa80b43561b1ab700}
+
+\item 
+\#define {\bfseries S\+C\+R\+E\+E\+N\+\_\+\+H\+E\+I\+G\+HT}~720\hypertarget{parkviewer_8h_a6974d08a74da681b3957b2fead2608b8}{}\label{parkviewer_8h_a6974d08a74da681b3957b2fead2608b8}
+
+\item 
+\#define {\bfseries S\+Q\+U\+A\+R\+E\+\_\+\+S\+I\+DE}~20\hypertarget{parkviewer_8h_afca7c49a3652307fdf33ff7fbeee5196}{}\label{parkviewer_8h_afca7c49a3652307fdf33ff7fbeee5196}
+
+\item 
+\#define {\bfseries M\+I\+N\+\_\+\+A\+LT}~0.\+5f\hypertarget{parkviewer_8h_ac4af596782111ed976bcf01f1f1027d3}{}\label{parkviewer_8h_ac4af596782111ed976bcf01f1f1027d3}
+
+\item 
+\#define {\bfseries M\+A\+X\+\_\+\+A\+LT}~100.\+0f\hypertarget{parkviewer_8h_a93c97efc6e6ebd64ef14fefb0bbd9226}{}\label{parkviewer_8h_a93c97efc6e6ebd64ef14fefb0bbd9226}
+
+\item 
+\#define {\bfseries S\+H\+O\+W\+\_\+\+F\+PS}~false\hypertarget{parkviewer_8h_a958c37bf3b24d674daab95749fe80f3d}{}\label{parkviewer_8h_a958c37bf3b24d674daab95749fe80f3d}
+
+\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef unsigned long long {\bfseries ulong64\+\_\+t}\hypertarget{parkviewer_8h_a0ae1938d196a14af72f739c39331ff4c}{}\label{parkviewer_8h_a0ae1938d196a14af72f739c39331ff4c}
+
+\item 
+typedef pair$<$ G\+Luint, G\+Luint $>$ {\bfseries Vertex\+Color\+Pair}\hypertarget{parkviewer_8h_a4fb08eb633c0f44d50e25db6f4627a7e}{}\label{parkviewer_8h_a4fb08eb633c0f44d50e25db6f4627a7e}
+
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{parkviewer_8h_a5180f7bf2b71421af837035824a8c8ac}{framebuffer\+\_\+size\+\_\+callback} (G\+L\+F\+Wwindow $\ast$window, int width, int height)\hypertarget{parkviewer_8h_a5180f7bf2b71421af837035824a8c8ac}{}\label{parkviewer_8h_a5180f7bf2b71421af837035824a8c8ac}
+
+\begin{DoxyCompactList}\small\item\em Callback functions used for moving the camera in the scene. \end{DoxyCompactList}\item 
+void {\bfseries mouse\+\_\+callback} (G\+L\+F\+Wwindow $\ast$window, double xpos, double ypos)\hypertarget{parkviewer_8h_af4ca2891044ac10a664b8d83ce590f1f}{}\label{parkviewer_8h_af4ca2891044ac10a664b8d83ce590f1f}
+
+\item 
+void {\bfseries scroll\+\_\+callback} (G\+L\+F\+Wwindow $\ast$window, double xoffset, double yoffset)\hypertarget{parkviewer_8h_a06ad2502008f16fbcf01dfaa7f7bc9ea}{}\label{parkviewer_8h_a06ad2502008f16fbcf01dfaa7f7bc9ea}
+
+\item 
+void {\bfseries process\+Input} (G\+L\+F\+Wwindow $\ast$window)\hypertarget{parkviewer_8h_a2d03c6f2666863543429a06ef642fe6a}{}\label{parkviewer_8h_a2d03c6f2666863543429a06ef642fe6a}
+
+\item 
+void \hyperlink{parkviewer_8h_a3731f88c74cabeee7b8317bb692e9a2e}{draw\+Generic\+Object} (G\+Luint \&V\+AO, G\+Luint program\+ID, glm\+::mat4 proj, glm\+::mat4 view, int size, bool elemental, glm\+::vec3 translation\+Vector=glm\+::vec3(0, 0, 0), glm\+::vec3 scale\+Vector=glm\+::vec3(1, 1, 1), G\+Lfloat rotation\+Angle=0, glm\+::vec3 rotation\+Axis=glm\+::vec3(1, 0, 0))
+\item 
+bool \hyperlink{parkviewer_8h_aa99bbb368970b8aa910aca7b9e5b32a0}{load\+Ass\+Imp} (const char $\ast$path, std\+::vector$<$ unsigned short $>$ \&indices, std\+::vector$<$ glm\+::vec3 $>$ \&vertices, std\+::vector$<$ glm\+::vec3 $>$ \&normals)
+\item 
+bool \hyperlink{parkviewer_8h_a9bc8ae706f61fed30ffc1f03e5c485d2}{init\+Open\+GL} ()\hypertarget{parkviewer_8h_a9bc8ae706f61fed30ffc1f03e5c485d2}{}\label{parkviewer_8h_a9bc8ae706f61fed30ffc1f03e5c485d2}
+
+\begin{DoxyCompactList}\small\item\em Call intialisation functions for Open\+GL to render the scene. \end{DoxyCompactList}\item 
+void \hyperlink{parkviewer_8h_a249e016486b9be5f4c106bee58bc72ec}{setup\+Mesh\+V\+AO} (\hyperlink{classMesh}{Mesh} mesh, G\+Lfloat $\ast$color\+\_\+vector, vector$<$ \hyperlink{structObjectData}{Object\+Data} $>$ \&object\+Vector)
+\item 
+void \hyperlink{parkviewer_8h_a219aeb2f6cb847b81db7558e7d7d28bc}{set\+Call\+Backs} (G\+L\+F\+Wwindow $\ast$window)\hypertarget{parkviewer_8h_a219aeb2f6cb847b81db7558e7d7d28bc}{}\label{parkviewer_8h_a219aeb2f6cb847b81db7558e7d7d28bc}
+
+\begin{DoxyCompactList}\small\item\em Attach \hyperlink{classCamera}{Camera}\textquotesingle{}s functions to the callbacks defined previously. \end{DoxyCompactList}\item 
+void \hyperlink{parkviewer_8h_a1c4b2e354ddd532904de04abe3489beb}{generate\+Model\+V\+AO} (string path, \hyperlink{structObjectData}{Object\+Data} \&object, const G\+Lfloat $\ast$color\+\_\+array)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const G\+Lfloat \hyperlink{parkviewer_8h_a69e3cfd333fa9b891c323caaec5398e3}{x\+\_\+min} = -\/ 20\hypertarget{parkviewer_8h_a69e3cfd333fa9b891c323caaec5398e3}{}\label{parkviewer_8h_a69e3cfd333fa9b891c323caaec5398e3}
+
+\begin{DoxyCompactList}\small\item\em Bounds for the park in the world space of Open\+GL. The fence is placed around this. \end{DoxyCompactList}\item 
+const G\+Lfloat {\bfseries x\+\_\+max} = 20\hypertarget{parkviewer_8h_a59806f9ec821c8ec127b0d3ba5143458}{}\label{parkviewer_8h_a59806f9ec821c8ec127b0d3ba5143458}
+
+\item 
+const G\+Lfloat {\bfseries y\+\_\+min} = 0.\+5f\hypertarget{parkviewer_8h_a192a0078c43828c6d1f9e79254a99f2e}{}\label{parkviewer_8h_a192a0078c43828c6d1f9e79254a99f2e}
+
+\item 
+const G\+Lfloat {\bfseries y\+\_\+max} = 100.\+0f\hypertarget{parkviewer_8h_a38b14705bd1e773c33360a5ea49533ab}{}\label{parkviewer_8h_a38b14705bd1e773c33360a5ea49533ab}
+
+\item 
+const G\+Lfloat {\bfseries z\+\_\+min} = -\/ 20\hypertarget{parkviewer_8h_a91b224378cef5442a6ce12359837ba58}{}\label{parkviewer_8h_a91b224378cef5442a6ce12359837ba58}
+
+\item 
+const G\+Lfloat {\bfseries z\+\_\+max} = 20\hypertarget{parkviewer_8h_ac29afaabb520a0045a7f8638b686dddf}{}\label{parkviewer_8h_ac29afaabb520a0045a7f8638b686dddf}
+
+\item 
+G\+L\+F\+Wwindow $\ast$ {\bfseries window}\hypertarget{parkviewer_8h_a80de27bd7dc4e2b2ad3d5895b97a70f0}{}\label{parkviewer_8h_a80de27bd7dc4e2b2ad3d5895b97a70f0}
+
+\item 
+float {\bfseries delta\+Time} = 0.\+0f\hypertarget{parkviewer_8h_a1a61318ed6aa02b4ff346e7eb8f68891}{}\label{parkviewer_8h_a1a61318ed6aa02b4ff346e7eb8f68891}
+
+\item 
+float {\bfseries last\+Frame} = 0.\+0f\hypertarget{parkviewer_8h_a518a497d888d805d5f368bbb91b54a6c}{}\label{parkviewer_8h_a518a497d888d805d5f368bbb91b54a6c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\index{parkviewer.\+h@{parkviewer.\+h}!draw\+Generic\+Object@{draw\+Generic\+Object}}
+\index{draw\+Generic\+Object@{draw\+Generic\+Object}!parkviewer.\+h@{parkviewer.\+h}}
+\subsubsection[{\texorpdfstring{draw\+Generic\+Object(\+G\+Luint \&\+V\+A\+O, G\+Luint program\+I\+D, glm\+::mat4 proj, glm\+::mat4 view, int size, bool elemental, glm\+::vec3 translation\+Vector=glm\+::vec3(0, 0, 0), glm\+::vec3 scale\+Vector=glm\+::vec3(1, 1, 1), G\+Lfloat rotation\+Angle=0, glm\+::vec3 rotation\+Axis=glm\+::vec3(1, 0, 0))}{drawGenericObject(GLuint &VAO, GLuint programID, glm::mat4 proj, glm::mat4 view, int size, bool elemental, glm::vec3 translationVector=glm::vec3(0, 0, 0), glm::vec3 scaleVector=glm::vec3(1, 1, 1), GLfloat rotationAngle=0, glm::vec3 rotationAxis=glm::vec3(1, 0, 0))}}]{\setlength{\rightskip}{0pt plus 5cm}void draw\+Generic\+Object (
+\begin{DoxyParamCaption}
+\item[{G\+Luint \&}]{V\+AO, }
+\item[{G\+Luint}]{program\+ID, }
+\item[{glm\+::mat4}]{proj, }
+\item[{glm\+::mat4}]{view, }
+\item[{int}]{size, }
+\item[{bool}]{elemental, }
+\item[{glm\+::vec3}]{translation\+Vector = {\ttfamily glm\+:\+:vec3(0,~0,~0)}, }
+\item[{glm\+::vec3}]{scale\+Vector = {\ttfamily glm\+:\+:vec3(1,~1,~1)}, }
+\item[{G\+Lfloat}]{rotation\+Angle = {\ttfamily 0}, }
+\item[{glm\+::vec3}]{rotation\+Axis = {\ttfamily glm\+:\+:vec3(1,~0,~0)}}
+\end{DoxyParamCaption}
+)}\hypertarget{parkviewer_8h_a3731f88c74cabeee7b8317bb692e9a2e}{}\label{parkviewer_8h_a3731f88c74cabeee7b8317bb692e9a2e}
+Draw an object from its Vertex\+Array\+Object (V\+AO) and its modification vectors. Vectors for modifying the scale, translation, rotation of the object can be passed. \index{parkviewer.\+h@{parkviewer.\+h}!generate\+Model\+V\+AO@{generate\+Model\+V\+AO}}
+\index{generate\+Model\+V\+AO@{generate\+Model\+V\+AO}!parkviewer.\+h@{parkviewer.\+h}}
+\subsubsection[{\texorpdfstring{generate\+Model\+V\+A\+O(string path, Object\+Data \&object, const G\+Lfloat $\ast$color\+\_\+array)}{generateModelVAO(string path, ObjectData &object, const GLfloat *color_array)}}]{\setlength{\rightskip}{0pt plus 5cm}void generate\+Model\+V\+AO (
+\begin{DoxyParamCaption}
+\item[{string}]{path, }
+\item[{{\bf Object\+Data} \&}]{object, }
+\item[{const G\+Lfloat $\ast$}]{color\+\_\+array}
+\end{DoxyParamCaption}
+)}\hypertarget{parkviewer_8h_a1c4b2e354ddd532904de04abe3489beb}{}\label{parkviewer_8h_a1c4b2e354ddd532904de04abe3489beb}
+Take the path of the Wavefront .obj file and load it into the \hyperlink{structObjectData}{Object\+Data} structure. This is passed on to the render loop for drawing the 3D object. \index{parkviewer.\+h@{parkviewer.\+h}!load\+Ass\+Imp@{load\+Ass\+Imp}}
+\index{load\+Ass\+Imp@{load\+Ass\+Imp}!parkviewer.\+h@{parkviewer.\+h}}
+\subsubsection[{\texorpdfstring{load\+Ass\+Imp(const char $\ast$path, std\+::vector$<$ unsigned short $>$ \&indices, std\+::vector$<$ glm\+::vec3 $>$ \&vertices, std\+::vector$<$ glm\+::vec3 $>$ \&normals)}{loadAssImp(const char *path, std::vector< unsigned short > &indices, std::vector< glm::vec3 > &vertices, std::vector< glm::vec3 > &normals)}}]{\setlength{\rightskip}{0pt plus 5cm}bool load\+Ass\+Imp (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{path, }
+\item[{std\+::vector$<$ unsigned short $>$ \&}]{indices, }
+\item[{std\+::vector$<$ glm\+::vec3 $>$ \&}]{vertices, }
+\item[{std\+::vector$<$ glm\+::vec3 $>$ \&}]{normals}
+\end{DoxyParamCaption}
+)}\hypertarget{parkviewer_8h_aa99bbb368970b8aa910aca7b9e5b32a0}{}\label{parkviewer_8h_aa99bbb368970b8aa910aca7b9e5b32a0}
+Load Wavefront .obj generated in Blender. Take vectors for storing vertices, indices (for E\+BO), and normals of the Wavefront obj \index{parkviewer.\+h@{parkviewer.\+h}!setup\+Mesh\+V\+AO@{setup\+Mesh\+V\+AO}}
+\index{setup\+Mesh\+V\+AO@{setup\+Mesh\+V\+AO}!parkviewer.\+h@{parkviewer.\+h}}
+\subsubsection[{\texorpdfstring{setup\+Mesh\+V\+A\+O(\+Mesh mesh, G\+Lfloat $\ast$color\+\_\+vector, vector$<$ Object\+Data $>$ \&object\+Vector)}{setupMeshVAO(Mesh mesh, GLfloat *color_vector, vector< ObjectData > &objectVector)}}]{\setlength{\rightskip}{0pt plus 5cm}void setup\+Mesh\+V\+AO (
+\begin{DoxyParamCaption}
+\item[{{\bf Mesh}}]{mesh, }
+\item[{G\+Lfloat $\ast$}]{color\+\_\+vector, }
+\item[{vector$<$ {\bf Object\+Data} $>$ \&}]{object\+Vector}
+\end{DoxyParamCaption}
+)}\hypertarget{parkviewer_8h_a249e016486b9be5f4c106bee58bc72ec}{}\label{parkviewer_8h_a249e016486b9be5f4c106bee58bc72ec}
+Sets up the Vertex\+Array\+Object for a given \hyperlink{classMesh}{Mesh}. As a \hyperlink{classMesh}{Mesh} can contain several primitives, they are stored in the object\+Vector vector for passing on to the render loop. 

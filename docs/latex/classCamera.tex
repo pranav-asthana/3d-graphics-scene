@@ -1,0 +1,52 @@
+\hypertarget{classCamera}{}\section{Camera Class Reference}
+\label{classCamera}\index{Camera@{Camera}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classCamera_adc833c6c0b3f5cd2555d6753a7d974b1}{Camera} (int screen\+Height, int screen\+Width)\hypertarget{classCamera_adc833c6c0b3f5cd2555d6753a7d974b1}{}\label{classCamera_adc833c6c0b3f5cd2555d6753a7d974b1}
+
+\begin{DoxyCompactList}\small\item\em Default constructor, intiliasing with default values for the camera\textquotesingle{}s bounds. \end{DoxyCompactList}\item 
+{\bfseries Camera} (int screen\+Height, int screen\+Width, G\+Lfloat x\+\_\+min, G\+Lfloat x\+\_\+max, G\+Lfloat y\+\_\+min, G\+Lfloat y\+\_\+max, G\+Lfloat z\+\_\+min, G\+Lfloat z\+\_\+max)\hypertarget{classCamera_aa589a05bc671c6912a64d1887a9319c0}{}\label{classCamera_aa589a05bc671c6912a64d1887a9319c0}
+
+\item 
+glm\+::mat4 \hyperlink{classCamera_ae6804f73d19d0bc309699e60ea22bb0b}{get\+Camera\+View} ()
+\item 
+glm\+::vec3 {\bfseries get\+Camera\+Position} ()\hypertarget{classCamera_a4fafd54232cf9e6ed67b26fd5b63ba12}{}\label{classCamera_a4fafd54232cf9e6ed67b26fd5b63ba12}
+
+\item 
+float {\bfseries get\+F\+OV} ()\hypertarget{classCamera_a5ec1871e6f296d8528e64157c6371c09}{}\label{classCamera_a5ec1871e6f296d8528e64157c6371c09}
+
+\item 
+void \hyperlink{classCamera_afe7b8e7729cf2ac9aa76618b3134e39d}{scroll\+\_\+callback} (G\+L\+F\+Wwindow $\ast$window, double xoffset, double yoffset)
+\item 
+void {\bfseries mouse\+\_\+callback} (G\+L\+F\+Wwindow $\ast$window, double xpos, double ypos)\hypertarget{classCamera_ae9bac42cc36d4f19ee6a9ff842d7e837}{}\label{classCamera_ae9bac42cc36d4f19ee6a9ff842d7e837}
+
+\item 
+void {\bfseries process\+Input} (G\+L\+F\+Wwindow $\ast$window, float delta\+Time)\hypertarget{classCamera_a0b3e45d6edfc191080feb48e0887c05e}{}\label{classCamera_a0b3e45d6edfc191080feb48e0887c05e}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{Camera@{Camera}!get\+Camera\+View@{get\+Camera\+View}}
+\index{get\+Camera\+View@{get\+Camera\+View}!Camera@{Camera}}
+\subsubsection[{\texorpdfstring{get\+Camera\+View()}{getCameraView()}}]{\setlength{\rightskip}{0pt plus 5cm}glm\+::mat4 Camera\+::get\+Camera\+View (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classCamera_ae6804f73d19d0bc309699e60ea22bb0b}{}\label{classCamera_ae6804f73d19d0bc309699e60ea22bb0b}
+Some functions in the 3dviewer code require the view from the camera\textquotesingle{}s F\+OV to decide how much to render. \index{Camera@{Camera}!scroll\+\_\+callback@{scroll\+\_\+callback}}
+\index{scroll\+\_\+callback@{scroll\+\_\+callback}!Camera@{Camera}}
+\subsubsection[{\texorpdfstring{scroll\+\_\+callback(\+G\+L\+F\+Wwindow $\ast$window, double xoffset, double yoffset)}{scroll_callback(GLFWwindow *window, double xoffset, double yoffset)}}]{\setlength{\rightskip}{0pt plus 5cm}void Camera\+::scroll\+\_\+callback (
+\begin{DoxyParamCaption}
+\item[{G\+L\+F\+Wwindow $\ast$}]{window, }
+\item[{double}]{xoffset, }
+\item[{double}]{yoffset}
+\end{DoxyParamCaption}
+)}\hypertarget{classCamera_afe7b8e7729cf2ac9aa76618b3134e39d}{}\label{classCamera_afe7b8e7729cf2ac9aa76618b3134e39d}
+Callbacks are triggered through Open\+GL and call the camera\textquotesingle{}s callback functions to reposition the camera and redraw the scene. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{Camera_8h}{Camera.\+h}\item 
+src/Camera.\+cpp\end{DoxyCompactItemize}

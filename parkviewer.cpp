@@ -1,10 +1,4 @@
 #include "parkviewer.h"
-#include <ctime>
-#include <cstdio>
-#include <iostream>
-#include <chrono>
-#include <sys/time.h>
-using namespace std::chrono;
 
 static Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, x_min, x_max, y_min, y_max, z_min, z_max);
 
@@ -233,7 +227,6 @@ void generateModelVAO(string path, ObjectData &object, const GLfloat* color_arra
 
 int main()
 {
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     if(!glfwInit()) {
         fprintf( stderr, "Failed to initialize GLFW\n" );
         getchar();
@@ -256,7 +249,6 @@ int main()
         glfwTerminate();
         return false;
     }
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
     GLuint ModelArrayID, ModelVBO, ModelColorVBO, EBO, indexSize;
     ObjectData swing, carousel, swingChair, cg;
@@ -272,6 +264,7 @@ int main()
     generateModelVAO("coaster_glasses.obj", coaster_glasses, glasses_color);
     generateModelVAO("coaster_head.obj", coaster_head, monkey_color);
     generateModelVAO("coaster_mouth.obj", coaster_mouth, mouth_color);
+
     // Sky color
     glClearColor(1.0f, 0.8f, 0.45f, 0.9f);
 
@@ -310,11 +303,6 @@ int main()
     for (int i = 0; i < mesh_group.size(); i++) {
         setupMeshVAO(mesh_group.at(i), &color_vector_group.at(i)[0], sceneMesh);
     }
-    high_resolution_clock::time_point t3 = high_resolution_clock::now();
-    double dif = duration_cast<milliseconds>( t2 - t1 ).count();
-    printf ("Elasped time is %lf nanoseconds.\n", dif );
-    dif = duration_cast<milliseconds>( t3 - t2 ).count();
-    printf ("Elasped time is %lf nanoseconds.\n", dif );
 
     while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();

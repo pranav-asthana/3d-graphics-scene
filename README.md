@@ -11,4 +11,4 @@ make -j4
 
 # Documentation
 
-[https://bhavathireddy.wixsite.com/computer-graphics/production-phase](https://bhavathireddy.wixsite.com/computer-graphics/production-phase)
+Available under ```docs/``` and at: [https://bhavathireddy.wixsite.com/computer-graphics/production-phase](https://bhavathireddy.wixsite.com/computer-graphics/production-phase)

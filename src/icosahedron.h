@@ -1,3 +1,4 @@
+/** @file */
 #ifndef ICOSAHEDRON_H
 #define ICOSAHEDRON_H
 

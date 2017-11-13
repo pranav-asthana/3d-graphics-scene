@@ -1,3 +1,4 @@
+/** @file */
 #ifndef PARK_VIEWER_H
 #define PARK_VIEWER_H
 

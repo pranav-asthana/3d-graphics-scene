@@ -22,8 +22,8 @@
 #include "src/Camera.h"
 #include "Constants.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 #define SQUARE_SIDE 20
 #define MIN_ALT 0.5f
 #define MAX_ALT 100.0f

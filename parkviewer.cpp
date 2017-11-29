@@ -236,7 +236,7 @@ int main()
         return -1;
     }
 
-    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", NULL, NULL);
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Cubes!", glfwGetPrimaryMonitor(), NULL);
     if(window == NULL){
         glfwTerminate();
         return -1;

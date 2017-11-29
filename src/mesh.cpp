@@ -23,7 +23,7 @@ void Mesh::addTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3)
     addVertex(v2);
     addVertex(v3);
 
-    normals.push_back(glm::cross(v1-v2, v3-v2));
+    normals.push_back(glm::cross(v2-v1, v3-v2));
 }
 
 void Mesh::addQuad(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 v4)
